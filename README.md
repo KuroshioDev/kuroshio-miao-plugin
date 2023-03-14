@@ -13,7 +13,7 @@ Software architecture description
 2.  进入../plugins/@kuroshio/genshin/plugins文件夹
 3.  克隆代码
 ```
-git clone https://github.com/KuroshioDev/kuroshio-miao-plugin ./xiaoyao-plugin
+git clone https://github.com/KuroshioDev/kuroshio-miao-plugin ./miao-plugin
 ```
 
 #### Instructions

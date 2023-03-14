@@ -1,0 +1,107 @@
+commands:
+  genshin.wiki.profile:
+    description: 查询原神角色资料，命座信息，天赋信息
+    usage: |
+      指令用法: #XX[天赋 | 命座 | 图鉴]
+    examples: |
+      例子：
+      - #胡桃天赋
+      - #胡桃命座
+      - #胡桃图鉴
+  genshin.wiki.calendar:
+    description: 查看原神活动日历
+    usage: |
+      指令用法: #日历
+  genshin.wiki.stat:
+    description: 查询原神角色数据分布
+    usage: |
+      指令用法: #角色[持有|持有率|命座|命之座|.命]分布
+    examples: |
+      例子：
+      - #角色持有率分布
+      - #角色命座分布
+  genshin.wiki.abysspct:
+    description: 查询原神深渊数据分布
+    usage: |
+      指令用法: #深渊[9|10|11|12|]层使用率
+    examples: |
+      例子：
+      - #深渊12层使用率
+      - #深渊11层使用率
+  genshin.profile.abyssteam:
+    description: 自动深渊配队
+    usage: |
+      指令用法: #深渊配队
+  genshin.profile.uploaddata:
+    description: 上传深渊数据进行排名
+    usage: |
+      指令用法: #上传深渊
+  genshin.panel:
+    description: 原神角色面板功能
+  genshin.panel.get:
+    description: 更新面板
+    usage: |
+      指令用法: #更新面板
+  genshin.panel.detail:
+    description: 查询人物面板
+    usage: |
+      指令用法:
+      - 查看角色面板： #[角色名]面板
+      - 面板换武器：#[角色名]面板换雾切
+      - 面板换圣遗物: #[角色名]面板换托马圣遗物
+      - 换角色：#[角色名]面板换公子
+    examples: |
+      例子：
+      - #胡桃面板
+      - #胡桃面板换护膜
+      - #胡桃面板换托马圣遗物
+      - #胡桃面板换烟绯
+  genshin.panel.list:
+    description: 查看当前获取的面板列表
+    usage: |
+      指令用法: #面板列表
+  genshin.panel.stat:
+    description: 面板练度统计
+    usage: |
+      指令用法: #面板练度统计
+  genshin.help.panel:
+    description: 角色面板帮助
+    usage: |
+      指令用法: #角色面板帮助
+  genshin.panel.setlv:
+    description: 设置敌人等级，用于计算伤害
+    usage: |
+      指令用法: #敌人等级90
+  genshin.panel.resetrank:
+    description: 重设排名
+    usage: |
+      指令用法: #重设排名
+  genshin.panel.refreshrank:
+    description: 刷新排名
+    usage: |
+      指令用法: #刷新排名
+  genshin.panel.rank:
+    description: 查看角色排名榜
+    usage: |
+      指令用法: #[角色名]排名
+    examples: |
+      例子：
+      - #胡桃排名
+  genshin.panel.top:
+    description: 查看本频道最强角色
+    usage: |
+      指令用法: #最强[角色名]
+    examples: |
+      例子：
+      - #最强胡桃
+  genshin.panel.upload:
+    description: 上传面板图
+    usage: |
+      指令用法: #上传[角色名]面板图
+    examples: |
+      例子：
+      - #上传胡桃面板图
+  genshin.admin.miao.setting:
+    description: 查看miao-plugin设置
+    usage: |
+      指令用法: #喵喵设置

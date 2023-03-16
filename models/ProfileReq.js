@@ -94,16 +94,17 @@ class ProfileReq extends Base {
       self._isReq = false
       const reqTime = new Date() * 1 - startTime
       this.log(`请求结束，请求用时${reqTime}ms，面板服务：${serv.name}...`)
-      if (data[0] === '<') {
-        let titleRet = /<title>(.+)<\/title>/.exec(data)
-        if (titleRet && titleRet[1]) {
-          data = { error: titleRet[1] }
-        } else {
-          return this.err('error', 60)
-        }
-      } else {
-        data = JSON.parse(data)
-      }
+      // if (data[0] === '<') {
+      //   let titleRet = /<title>(.+)<\/title>/.exec(data)
+      //   if (titleRet && titleRet[1]) {
+      //     data = { error: titleRet[1] }
+      //   } else {
+      //     return this.err('error', 60)
+      //   }
+      // } else {
+      //   data = JSON.parse(data)
+      // }
+      data = JSON.parse(data)
     } catch (e) {
       console.log('面板请求错误', e)
       self._isReq = false

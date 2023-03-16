@@ -16,7 +16,7 @@ exports.enkaApi = {
   url: 'https://enka.network/',
   userAgent: 'Miao-Plugin/3.1',
   listApi: ({ url, uid, diyCfg }) => {
-    return `${url}api/u/${uid}/`
+    return `${url}api/uid/${uid}/`
   }
 }
 

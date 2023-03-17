@@ -7,8 +7,7 @@ const MysAvatar = require( './MysAvatar.js')
 const enkaApi = require( './EnkaApi.js')
 const miaoApi = require( './MiaoApi.js')
 const mggApi  = require('./MggApi.js')
-
-const diyCfg = {}
+const diyCfg = require('../../config/profile.js')
 
 const Profile = {
   servs: {},

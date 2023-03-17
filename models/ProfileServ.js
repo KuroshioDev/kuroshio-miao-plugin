@@ -1,9 +1,8 @@
 const lodash = require( 'lodash')
 const Base = require( './Base.js')
 const sysCfg = require( '../config/system/profile_system.js')
+const diyCfg = require('../config/profile.js')
 const Cfg = require( '../components/Cfg.js')
-
-let diyCfg = {}
 
 class ProfileServ extends Base {
   constructor (cfg) {

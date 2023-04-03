@@ -53,7 +53,9 @@ class Player extends Base {
       player.e = e
       return player
     } else {
-      return new Player(e)
+      let player = new Player(e)
+      player.e = e
+      return player
     }
   }
 

@@ -1,3 +1,4 @@
+
 class profileApp {
   constructor(app, ctx, config) {
     ctx.guild().command('genshin.panel.get', { authority: 1 })
@@ -84,6 +85,13 @@ class profileApp {
       .action(async ({session}, uid) => {
         let application = new app.profile(ctx, session, config)
         application.avatarList()
+      })
+
+    ctx.command('genshin.panel.profileArtisList', { authority: 1 }).userFields(['id'])
+      .alias('#圣遗物列表')
+      .action(async ({session}) => {
+        let application = new app.profile(ctx, session, config)
+        application.artisList()
       })
   }
 

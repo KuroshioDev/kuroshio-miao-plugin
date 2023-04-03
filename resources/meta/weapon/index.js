@@ -1,7 +1,8 @@
 const Data  = require( '../../../components/Data.js')
 const lodash = require( 'lodash')
 const { weaponType, abbr, alias, weaponSet } = require( './meta.js')
-const {common} = require('../../../../lib/common/common.js')
+const common = require('../../../../lib/common/common.js')
+
 let calc = {}
 let data = {}
 

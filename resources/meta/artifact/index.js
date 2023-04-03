@@ -6,7 +6,7 @@ const meta = require('./meta')
 let artiSetMap = {}
 let artiMap = {}
 
-let artis = Data.readJSON('resources/meta/artifact/data.json')
+let artis = Data.readJSON('resources/meta/artifact/data.json', 'miao')
 
 lodash.forEach(artis, (ds) => {
   let artiSet = {

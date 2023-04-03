@@ -1,6 +1,7 @@
 const lodash = require( 'lodash')
 const Format = require( '../../../components/Format.js')
 
+
 exports.abbr = {
   炽烈的炎之魔女: '魔女',
   昔日宗室之仪: '宗室',

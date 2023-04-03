@@ -1,5 +1,5 @@
 const lodash = require( 'lodash')
-const { plugin } = require("../../lib/plugins/plugin.js")
+const plugin = require("../../lib/plugins/plugin.js")
 
 class App {
   constructor (cfg) {
@@ -99,13 +99,12 @@ class App {
       if (app.yzRule && app.yzCheck) {
         let yzKey = `Yz${key}`
         let yzRule = lodash.trim(app.yzRule.toString(), '/')
-
         rules.push({
           reg: yzRule,
           fnc: yzKey
         })
         cls.prototype[yzKey] = async function () {
-          if (!app.yzCheck()) {
+          if (!Version.isMiao && !app.yzCheck()) {
             return false
           }
           let e = this.e
@@ -123,7 +122,7 @@ class App {
     return {
       reg: 'noCheck',
       describe: cfg.desc || '',
-      priority: 50,
+      priority: cfg.priority || 50,
       hashMark: true
     }
   }

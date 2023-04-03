@@ -1,18 +1,24 @@
 const lodash = require( 'lodash')
 const fs = require( 'fs')
-const {common} = require("../../lib/common/common.js")
+const common = require("../../lib/common/common.js")
 
-const _path = process.cwd()
+const _path = common.getRootPath()
 const getRoot = (root = '') => {
-  if (root === 'root' || root === 'yunzai') {
-    root = `${_path}/`
-  } else if (!root) {
-    root = `${common.getPluginsPath()}/miao-plugin/`
+  if (!root) {
+    root = `${_path}`
+  } else if (root === 'root' || root === 'yunzai') {
+    root = `${_path}`
+  } else if (root === 'miao') {
+    root = `${_path}/plugins/miao-plugin`
+  } else {
+    root = `${_path}/plugins/${root}`
   }
   return root
 }
 
 let Data = {
+
+  getRoot,
 
   /*
   * 根据指定的path依次检查与创建目录
@@ -52,7 +58,7 @@ let Data = {
   /*
   * 写JSON
   * */
-  writeJSON (cfg, data, space = '\t', root = '') {
+  writeJSON (cfg, data, root = '', space = 2) {
     if (arguments.length > 1) {
       return Data.writeJSON({
         name: cfg,
@@ -73,6 +79,7 @@ let Data = {
     }
     return fs.writeFileSync(`${root}/${name}`, data)
   },
+
   delFile (file, root = '') {
     root = getRoot(root)
     try {
@@ -85,6 +92,7 @@ let Data = {
     }
     return false
   },
+
   async getCacheJSON (key) {
     try {
       let txt = await redis.get(key)
@@ -139,8 +147,8 @@ let Data = {
   },
 
   async importCfg (key) {
-    let sysCfg = await Data.importModule(`config/system/${key}_system.js`)
-    let diyCfg = await Data.importModule(`config/${key}.js`)
+    let sysCfg = await Data.importModule(`config/system/${key}_system.js`, 'miao')
+    let diyCfg = await Data.importModule(`config/${key}.js`, 'miao')
     if (diyCfg.isSys) {
       console.error(`miao-plugin: config/${key}.js无效，已忽略`)
       console.error(`如需配置请复制config/${key}_default.js为config/${key}.js，请勿复制config/system下的系统文件`)

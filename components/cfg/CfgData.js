@@ -2,7 +2,7 @@ const cfgSchema= require( '../../config/system/cfg_system.js')
 const lodash = require( 'lodash')
 const Data = require( '../Data.js')
 const fs = require( 'node:fs')
-const { common } = require('../../../lib/common/common.js')
+const common = require('../../../lib/common/common.js')
 const cfg = require( '../../config/cfg.js')
 let cfgData = {
   saveCfg (cfg) {

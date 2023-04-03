@@ -1,9 +1,9 @@
 const fs = require( 'fs')
 const lodash = require( 'lodash')
 const cfgData = require( './cfg/CfgData.js')
-const { common } = require('../../lib/common/common.js')
+const common = require('../../lib/common/common.js')
 
-const _cfgPath = `${common.getPluginsPath}/miao-plugin/components/`
+const _cfgPath = `${common.getPluginsPath()}/miao-plugin/components/`
 let cfg = {}
 
 // 会触发HMR无限重载文件,所以注释

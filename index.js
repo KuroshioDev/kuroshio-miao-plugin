@@ -1,5 +1,5 @@
 const fs = require( 'node:fs')
-const {common} = require( '../lib/common/common')
+const common = require( '../lib/common/common')
 const files = fs.readdirSync(`${common.getPluginsPath()}/miao-plugin/apps`).filter(file => file.endsWith('index.js'))
 async function init() {
   let ret = []

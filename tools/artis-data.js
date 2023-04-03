@@ -5,6 +5,7 @@ const Data = require( '../components/Data.js')
 const lodash = require( 'lodash')
 const request = require( 'request')
 const HttpsProxyAgent = request('https-proxy-agent')
+
 let agent = new HttpsProxyAgent('http://localhost:4780')
 
 const artiIdx = {
@@ -95,7 +96,7 @@ async function down (sets = '') {
     }
     ds.sets = await getSets(ds.id)
     console.log(`arti ${ds.id}:${ds.name} Done`)
-    Data.createDir(`resources/meta/artifact/imgs/${ds.name}`)
+    Data.createDir(`resources/meta/artifact/imgs/${ds.name}`, 'miao')
 
     lodash.forEach(ds.sets, (s, idx) => {
       imgs.push({
@@ -104,8 +105,8 @@ async function down (sets = '') {
       })
     })
   }
-  Data.createDir('resources/meta/artifact')
-  Data.writeJSON('resources/meta/artifact/data.json', ret)
+  Data.createDir('resources/meta/artifact', 'miao')
+  Data.writeJSON('resources/meta/artifact/data.json', ret, 'miao')
 
   const _path = process.cwd()
   const _root = _path + '/plugins/miao-plugin/'

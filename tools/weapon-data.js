@@ -7,14 +7,15 @@ const request = require( 'request')
 const WeaponData = require( './sprider/WeaponData.js')
 const ImgDownloader = require( './sprider/ImgDown.js')
 
+
 let ret = {}
 const types = ['sword', 'claymore', 'polearm', 'bow', 'catalyst']
 for (let type of types) {
-  ret[type] = Data.readJSON(`resources/meta/weapon/${type}/data.json`)
+  ret[type] = Data.readJSON(`resources/meta/weapon/${type}/data.json`, 'miao')
 }
 
-let mData = Data.readJSON('resources/meta/material/data.json')
-let weaponIdMap = Data.readJSON('tools/meta/weapon.json')
+let mData = Data.readJSON('resources/meta/material/data.json', 'miao')
+let weaponIdMap = Data.readJSON('tools/meta/weapon.json', 'miao')
 
 let getWeaponTypeData = async function (type) {
   let url = `https://genshin.honeyhunterworld.com/fam_${type}/?lang=CHS`
@@ -91,8 +92,8 @@ async function down (t, n) {
       continue
     }
     await getWeaponTypeData(type)
-    Data.createDir(`resources/meta/weapon/${type}`)
-    Data.writeJSON({ name: `resources/meta/weapon/${type}/data.json`, data: ret[type], rn: true })
+    Data.createDir(`resources/meta/weapon/${type}`, 'miao')
+    Data.writeJSON({ name: `resources/meta/weapon/${type}/data.json`, data: ret[type], rn: true, root: 'miao' })
 
     let imgs = []
     await Data.asyncPool(6, lodash.keys(ret[type]), async (name) => {
@@ -100,9 +101,9 @@ async function down (t, n) {
         return
       }
       let ds = ret[type][name]
-      Data.createDir(`resources/meta/weapon/${type}/${ds.name}`)
+      Data.createDir(`resources/meta/weapon/${type}/${ds.name}`, 'miao')
       let data = await getWeaponData(type, ds)
-      Data.writeJSON({ name: `resources/meta/weapon/${type}/${ds.name}/data.json`, data, rn: true })
+      Data.writeJSON({ name: `resources/meta/weapon/${type}/${ds.name}/data.json`, data, rn: true, root: 'miao' })
       lodash.forEach({
         icon: '',
         awaken: '_awaken_icon',
@@ -141,7 +142,7 @@ async function down (t, n) {
       }
     })
   }
-  Data.writeJSON({ name: 'resources/meta/material/data.json', data: mData, rn: true })
+  Data.writeJSON({ name: 'resources/meta/material/data.json', data: mData, rn: true, root: 'miao' })
 }
 
 // 'sword', 'claymore', 'polearm', 'bow', 'catalyst'

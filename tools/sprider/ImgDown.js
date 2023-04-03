@@ -2,6 +2,7 @@ const fs = require( 'fs')
 const request = require( 'request')
 const { Data } = require( '../../components/index.js')
 const HttpsProxyAgent = request('https-proxy-agent')
+
 let agent = new HttpsProxyAgent('http://localhost:4780')
 request.defaults({
   agent

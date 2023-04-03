@@ -1,10 +1,9 @@
 const Data  = require( '../../components/Data.js')
 const lodash = require( 'lodash')
 const fs  = require( 'fs')
-const { common  } = require( '../../../lib/common/common.js')
+const common = require( '../../../lib/common/common.js')
 
 const charPath = common.getPluginsPath() + '/miao-plugin/resources/meta/character'
-
 let cfgMap = {
   char: {},
   async init () {

@@ -3,6 +3,7 @@ const Data = require( '../../components/Data.js')
 const chestInfo = require( '../../resources/meta/info/index.js')
 const moment = require( 'moment')
 
+
 const MysAvatar = {
 
   needRefresh (time, force = 0, forceMap = {}) {

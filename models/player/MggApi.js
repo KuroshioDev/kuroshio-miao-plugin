@@ -2,6 +2,7 @@ const lodash = require('lodash')
 const { Data } = require('../../components/index.js')
 const EnkaData = require('./EnkaData.js')
 
+
 module.exports = {
   id: 'mgg',
   name: 'MiniGG-Api',

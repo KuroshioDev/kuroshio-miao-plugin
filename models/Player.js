@@ -17,7 +17,7 @@ const Profile = require( './player/Profile.js')
 const { Logger } = require('koishi')
 const logger = new Logger('Player')
 
-Data.createDir('/data/UserData', 'root')
+Data.createDir('/data/UserData')
 
 class Player extends Base {
   constructor (uid) {
@@ -109,7 +109,7 @@ class Player extends Base {
     if (this._ck) {
       ret._ck = this._ck
     }
-    Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, '', 'root')
+    Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
   }
 
   del () {

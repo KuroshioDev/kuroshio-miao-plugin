@@ -3,8 +3,8 @@
  * */
 const fs = require( 'fs')
 const lodash = require( 'lodash')
-const {sizeOf} = require( 'image-size')
-const {common} = require( '../../../lib/common/common.js')
+const sizeOf = require( 'image-size')
+const common = require( '../../../lib/common/common.js')
 
 const rPath = `${common.getPluginsPath()}/miao-plugin/resources`
 const CharImg = {
@@ -49,7 +49,7 @@ const CharImg = {
         return false
       }
     }
-    let ret = sizeOf(`./plugins/miao-plugin/resources/${img}`)
+    let ret = sizeOf(`${common.getPluginsPath()}/miao-plugin/resources/${img}`)
     ret.img = img
     ret.mode = ret.width > ret.height ? 'left' : 'bottom'
     return ret

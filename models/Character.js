@@ -14,11 +14,10 @@ const CharTalent = require( './character/CharTalent.js')
 const CharId = require( './character/CharId.js')
 const {CharMeta} = require( './character/CharMeta.js')
 const CharCfg = require( './character/CharCfg.js')
-
 let { wifeMap, idSort, idMap } = CharId
 
 let getMeta = function (name) {
-  return Data.readJSON(`resources/meta/character/${name}/data.json`)
+  return Data.readJSON(`resources/meta/character/${name}/data.json`,'miao')
 }
 
 class Character extends Base {
@@ -255,9 +254,9 @@ class Character extends Base {
 
     try {
       if (this.isTraveler) {
-        this._detail = Data.readJSON(`${path}/旅行者/${this.elem}/detail.json`)
+        this._detail = Data.readJSON(`${path}/旅行者/${this.elem}/detail.json`,'miao')
       } else {
-        this._detail = Data.readJSON(`${path}/${this.name}/detail.json`)
+        this._detail = Data.readJSON(`${path}/${this.name}/detail.json`,'miao')
       }
     } catch (e) {
       console.log(e)

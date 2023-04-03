@@ -4,7 +4,7 @@
 const lodash = require( 'lodash')
 const Data  = require( '../../components/Data.js')
 const ProfileArtis = require( '../ProfileArtis.js')
-const {common} = require('../../../lib/common/common.js')
+const common = require('../../../lib/common/common.js')
 
 let weaponBuffs = {}
 let artisBuffs = {}

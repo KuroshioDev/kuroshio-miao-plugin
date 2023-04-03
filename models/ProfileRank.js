@@ -3,7 +3,6 @@ const moment = require( 'moment')
 const Data = require( '../components/Data.js')
 const Common = require( '../components/Common.js')
 const Cfg = require( '../components/Cfg.js')
-
 class ProfileRank {
   constructor (data) {
     this.groupId = data.group || data.groupId || ''

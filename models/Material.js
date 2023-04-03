@@ -6,7 +6,7 @@ const Base = require( './Base.js')
 const Data = require( '../components/Data.js')
 const MaterialMeta = require( './material/MaterialMeta.js')
 const abbr = require('../resources/meta/material/abbr.js')
-let data = Data.readJSON('resources/meta/material/data.json')
+let data = Data.readJSON(`plugins/miao-plugin/resources/meta/material/data.json`)
 let mMap = {}
 let getItem = (ds) => {
   mMap[ds.name] = {

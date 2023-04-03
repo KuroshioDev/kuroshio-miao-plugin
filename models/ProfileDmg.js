@@ -6,7 +6,7 @@ const { attrMap } = require( '../resources/meta/artifact/index.js').meta
 const DmgBuffs = require( './profile/DmgBuffs.js')
 const DmgAttr = require( './profile/DmgAttr.js')
 const DmgCalc = require( './profile/DmgCalc.js')
-const {common} = require('../../lib/common/common.js')
+const common = require('../../lib/common/common.js')
 
 class ProfileDmg extends Base {
   constructor (profile = {}) {

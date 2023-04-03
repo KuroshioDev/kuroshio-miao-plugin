@@ -6,12 +6,12 @@ const profileApp = require( './entrace/profile')
 const adminApp = require( './entrace/admin')
 const statApp = require( './entrace/stat')
 const fs = require( "fs")
-const {common} = require( "../../lib/common/common")
+const common = require( "../../lib/common/common")
 const YAML = require('yaml')
+const gachaApp = require('./entrace/gacha.js')
+const helpApp = require('./entrace/help.js')
 
 const logger = new Logger("Kuroshio-Genshin-Plugin")
-
-
 class MiaoPlugin {
   constructor(ctx, config) {
     // ready
@@ -25,6 +25,8 @@ class MiaoPlugin {
       new profileApp(this.apps, ctx, config)
       new adminApp(this.apps, ctx, config)
       new statApp(this.apps, ctx, config)
+      new gachaApp(this.apps, ctx, config)
+      new helpApp(this.apps,ctx, config)
     })
   }
 }

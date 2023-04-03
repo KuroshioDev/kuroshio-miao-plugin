@@ -76,6 +76,15 @@ class profileApp {
         let application = new app.profile(ctx, session, config)
         application.uploadImg()
       })
+
+      ctx.guild().command('genshin.profile.role [uid:string]', {authority: 1}).userFields(['id'])
+      .alias('#角色查询')
+      .shortcut(/^(#(角色|查询|查询角色|角色查询|人物)[ |0-9]*$)|(^(#*uid|#*UID)\+*[1|2|5-9][0-9]{8}$)|(^#[\+|＋]*[1|2|5-9][0-9]{8})/)
+      .shortcut( /^#喵喵(角色|查询)[ |0-9]*$/)
+      .action(async ({session}, uid) => {
+        let application = new app.profile(ctx, session, config)
+        application.avatarList()
+      })
   }
 
 }

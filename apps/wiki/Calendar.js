@@ -6,6 +6,7 @@ const Common = require( '../../components/Common.js')
 const Data = require( '../../components/Data.js')
 const Cfg = require( '../../components/Cfg.js')
 const lodash = require( 'lodash')
+const Avatar =  require('../character/AvatarCard.js')
 
 const ignoreIds = [495, // 有奖问卷调查开启！
   1263, // 米游社《原神》专属工具一览
@@ -390,7 +391,6 @@ let Cal = {
         ret.push([li])
       }
     })
-
     return {
       ...dl,
       ...Cal.getCharData(dl.dateList),
@@ -403,6 +403,8 @@ let Cal = {
   },
 
   async render (e) {
+    e = this.e
+    //Avatar.check(e)
     let calData = await Cal.get()
     let mode = 'calendar'
     if (/(日历列表|活动)$/.test(e.msg)) {

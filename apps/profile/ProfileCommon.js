@@ -6,7 +6,7 @@ const Version = require( '../../components/Version.js')
 const Character = require( '../../models/Character.js')
 const MysApi = require( '../../models/MysApi.js')
 const Player = require( '../../models/Player.js')
-const {common} = require('../../../lib/common/common.js')
+const common = require('../../../lib/common/common.js')
 const { Logger } = require( 'koishi')
 const logger = new Logger('ProfileCommon')
 /*

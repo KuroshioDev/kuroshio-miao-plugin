@@ -27,10 +27,16 @@ poolVersion.push({
 let GachaData = {
 
   // 获取JSON数据
-  readJSON (qq, uid, type) {
+  async readJSON (qq, uid, type) {
     let logJson = []
     // 获取本地数据 进行数据合并
-    logJson = Data.readJSON(`/data/gachaJson/${qq}/${uid}/${type}.json`, 'root')
+    //logJson = Data.readJSON(`/data/gachaJson/${qq}/${uid}/${type}.json`, 'root')
+    let userData = await global.dbHelper.get('genshin_user_gachalog', {
+      uid: uid,
+      user_id: qq,
+      type: type
+    })
+    logJson = userData? userData.data : [];
     let itemMap = {}
     let nameMap = {}
     let items = []
@@ -95,8 +101,8 @@ let GachaData = {
   },
 
   // 卡池分析
-  analyse (qq, uid, type) {
-    let logData = GachaData.readJSON(qq, uid, type)
+  async analyse (qq, uid, type) {
+    let logData = await GachaData.readJSON(qq, uid, type)
     let fiveLog = []
     let fourLog = []
     let fiveNum = 0
@@ -261,24 +267,24 @@ let GachaData = {
   },
 
   // 卡池统计
-  stat (qq, uid, type) {
+  async stat (qq, uid, type) {
     let items = []
     let itemMap = {}
     let hasVersion = true
-    let loadData = function (poolId) {
-      let gachaData = GachaData.readJSON(qq, uid, poolId)
+    let loadData = async function (poolId) {
+      let gachaData = await GachaData.readJSON(qq, uid, poolId)
       items = items.concat(gachaData.items)
       lodash.extend(itemMap, gachaData.itemMap || {})
     }
     if (['up', 'char', 'all'].includes(type)) {
-      loadData(301)
+      await loadData(301)
     }
     if (['up', 'weapon', 'all'].includes(type)) {
-      loadData(302)
+      await loadData(302)
     }
     if (['all', 'normal'].includes(type)) {
       hasVersion = false
-      loadData(200)
+      await loadData(200)
     }
 
     items = items.sort((a, b) => b.time - a.time)

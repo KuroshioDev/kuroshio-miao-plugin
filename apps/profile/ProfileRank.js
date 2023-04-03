@@ -7,7 +7,7 @@ const Common = require( '../../components/Common.js')
 const Format = require( '../../components/Format.js')
 const lodash = require( 'lodash')
 const ProfileData = require("../../models/ProfileData");
-
+const ProfileDetail = require("./ProfileDetail");
 
 async function groupRank (e) {
   const groupRank = e.config.groupRank

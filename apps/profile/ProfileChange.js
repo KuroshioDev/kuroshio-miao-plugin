@@ -82,7 +82,7 @@ const ProfileChange = {
               type
             }
           })
-        } else if (keyRet[4] !== '武器') {
+        } else if (keyRet[4] !== '武器' && keyRet[4] !== '花') {
           return true
         }
       }

@@ -6,6 +6,7 @@ const Character = require( '../../models/Character.js')
 
 let Gacha = {
   async detail (e) {
+    e = this.e
     let msg = e.msg.replace(/#|抽卡|记录|祈愿|分析|池/g, '')
     let type = 301
     switch (msg) {
@@ -28,9 +29,9 @@ let Gacha = {
       return false
     }
 
-    let gacha = GachaData.analyse(e.user_id, uid, type)
+    let gacha = await GachaData.analyse(e.user_id, uid, type)
     if (!gacha) {
-      e.reply(`UID:${uid} 本地暂无抽卡信息，请通过【#抽卡帮助】获得绑定帮助...`)
+      e.reply(`UID:${uid} 本地暂无抽卡信息，请通过【#更新抽卡记录】更新...`)
       return true
     }
     await Common.render('gacha/gacha-detail', {
@@ -41,6 +42,7 @@ let Gacha = {
     }, { e, scale: 1.4, retMsgId: true })
   },
   async stat (e) {
+    e = this.e
     let msg = e.msg.replace(/#|统计|分析|池/g, '')
     let type = 'up'
     if (/武器/.test(msg)) {
@@ -57,9 +59,9 @@ let Gacha = {
     if (!uid || !qq) {
       return false
     }
-    let gacha = GachaData.stat(e.user_id, uid, type)
+    let gacha = await GachaData.stat(e.user_id, uid, type)
     if (!gacha) {
-      e.reply(`UID:${uid} 本地暂无抽卡信息，请通过【#抽卡帮助】获得绑定帮助...`)
+      e.reply(`UID:${uid} 本地暂无抽卡信息，请通过【#更新抽卡记录】进行更新...`)
       return true
     }
     await Common.render('gacha/gacha-stat', {

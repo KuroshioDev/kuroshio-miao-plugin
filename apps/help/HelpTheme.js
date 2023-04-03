@@ -1,10 +1,10 @@
 const lodash = require( 'lodash')
 const fs  = require( 'fs')
 const { Data } = require( '../../components/index.js')
-
+const common = require("../../../lib/common/common")
 let HelpTheme = {
   async getThemeCfg (theme, exclude) {
-    let dirPath = './plugins/miao-plugin/resources/help/theme/'
+    let dirPath = `${common.getPluginsPath()}/miao-plugin/resources/help/theme/`
     let ret = []
     let names = []
     let dirs = fs.readdirSync(dirPath)
@@ -29,7 +29,7 @@ let HelpTheme = {
     return {
       main: `${resPath}${name}/main.png`,
       bg: fs.existsSync(`${dirPath}${name}/bg.jpg`) ? `${resPath}${name}/bg.jpg` : `${resPath}default/bg.jpg`,
-      style: (await Data.importModule(`resources/help/theme/${name}/config.js`)).style || {}
+      style: (await Data.importModule(`resources/help/theme/${name}/config.js`, 'miao')).style || {}
     }
   },
   async getThemeData (diyStyle, sysStyle) {

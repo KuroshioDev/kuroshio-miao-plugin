@@ -1,3 +1,4 @@
+const common = require("../../../lib/common/common")
 const Common = require( '../../components/Common.js')
 const Cfg = require( '../../components/Cfg.js')
 const Version = require( '../../components/Version.js')
@@ -6,15 +7,12 @@ const fs = require( 'fs')
 const lodash = require( 'lodash')
 const HelpTheme = require( './HelpTheme.js')
 
-const _path = process.cwd()
+const _path = common.getPluginsPath()
 const helpPath = `${_path}/plugins/miao-plugin/resources/help`
 
 const Help = {
   async render (e) {
-    if (!/喵喵/.test(e.msg) && !Cfg.get('help', false)) {
-      return false
-    }
-
+    let isOffice  = this.e.session.guildId == '9627516829995618702'
     let custom = {}
     let help = {}
     if (fs.existsSync(`${helpPath}/help-cfg.js`)) {

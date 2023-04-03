@@ -4,7 +4,6 @@ const { getOriginalPicture  } = require( './profile/ProfileUtils.js')
 const Avatar= require( './character/AvatarCard.js')
 const Wife = require( './character/AvatarWife.js')
 
-
 let app = App.init({
   id: 'character',
   name: '角色查询'

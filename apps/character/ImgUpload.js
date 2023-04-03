@@ -55,8 +55,14 @@ async function uploadCharacterImg (e) {
       for (let val of source.message) {
         if (val.type === 'image') {
           imageMessages.push(val)
-        } else if (val.type === 'xml') { // 支持合并转发消息内置的图片批量上传，喵喵 喵喵喵？ 喵喵喵喵
-          let resid = val.data.match(/m_resid="(\d|\w|\/|\+)*"/)[0].replace(/m_resid=|"/g, '')
+        } else if (val.type === 'xml' || val.type === 'forward') {// 支持合并转发消息内置的图片批量上传，喵喵 喵喵喵？ 喵喵喵喵
+          let resid
+            try {
+              resid = val.data.match(/m_resid="(\d|\w|\/|\+)*"/)[0].replace(/m_resid=|"/g, '')
+            } catch (err) {
+              console.log('Miao合并上传：转换id获取')
+              resid = val.id
+            }
           if (!resid) break
           let message = await Bot.getForwardMsg(resid)
           for (const item of message) {
@@ -85,7 +91,7 @@ async function saveImages (e, name, imageMessages) {
   let path = resPath + pathSuffix
 
   if (!fs.existsSync(path)) {
-    Data.createDir(pathSuffix, resPath)
+    Data.createDir("resources/" + pathSuffix, 'miao')
   }
   let senderName = lodash.truncate(e.sender.card, { length: 8 })
   let imgCount = 0
@@ -204,6 +210,7 @@ async function profileImgList (e) {
   }
   if ([1, 0].includes(Cfg.get('originalPic') * 1)) {
     e.reply('已禁止获取面板图列表')
+    return true
   }
   let nickname = Bot.nickname
   if (e.isGroup) {

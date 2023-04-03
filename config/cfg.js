@@ -14,6 +14,9 @@ exports.profileStat = false
 // #帮助 #菜单
 exports.help = false
 
+// #抽卡分析 #抽卡统计
+exports.gachaStat = false
+
 // 戳一戳展示角色卡片
 exports.avatarPoke = true
 
@@ -33,8 +36,11 @@ exports.groupRankLimit = 1
 // 可选值5~30，建议15。设置高排名人数会提高图片的长度，图片较大可能会影响渲染与发送速度
 exports.rankNumber = 15
 
-// 面板服务优先选择：1：自动（具备有效Token时优先喵喵Api，否则Enka），2：Enka服务优先
-exports.profileServ = 1
+// 面板服务选择：0:自动，1:喵Api(需具备Token)， 2:Enka-API， 3:MiniGG-Api。如设置三位数字则为分服务器设置，按顺序分别为 国服/B服/外服，例如112代表国服B服Miao,国外Enka
+exports.profileServer = 112
+
+// 开启彩蛋图（三皇冠/ACE/满命）及自定义面板图，关闭使用官方立绘
+exports.costumeSplash = true
 
 // 伤害计算包含组队Buff。目前为测试阶段，数据可能不准确，请慎重开启。数据为固定Buff而非真实面板数据，最终计算数值可能有偏差。开启后请重启喵喵
 exports.teamCalc = false

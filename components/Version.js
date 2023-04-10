@@ -4,7 +4,7 @@ const common = require("../../lib/common/common.js");
 const Data = require('./Data.js')
 
 
-let packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+let packageJson = JSON.parse(fs.readFileSync(`package.json`, 'utf8'))
 
 const getLine = function (line) {
   line = line.replace(/(^\s*\*|\r)/g, '')

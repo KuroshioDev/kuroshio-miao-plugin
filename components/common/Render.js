@@ -1,4 +1,5 @@
 const Version = require( '../Version.js')
+const Cfg = require( '../Cfg.js')
 const common = require("../../../lib/common/common.js");
 
 const render = {
@@ -23,7 +24,7 @@ const render = {
           defaultLayout: layoutPath + 'default.html',
           elemLayout: layoutPath + 'elem.html',
           sys: {
-            scale: `style=transform:scale(${pct})`,
+            scale: Cfg.scale(cfg.scale || 1),
           },
           copyright: `<span class="version">Created By Koishi & Miao-Plugin<span class="version">${Version.version}</span>`,
           pageGotoParams: {

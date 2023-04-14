@@ -366,6 +366,7 @@ const buffs = {
     2: attr('dmg', 15, '草'),
     4: {
       title: '元素战技或元素爆发命中敌人后，使命中目标的草元素抗性降低30%',
+      check: ({ element }) => element === '草',
       data: {
         kx: 30
       }
@@ -403,6 +404,28 @@ const buffs = {
         bloom: 80,
         burgeon: 80,
         hyperBloom: 80
+      }
+    }
+  },
+
+  水仙之梦: {
+    2: attr('dmg', 15, '水'),
+    4: {
+      title: '3层Buff下提高攻击力25%，水伤15%',
+      data: {
+        atkPct: 25,
+        dmg: 15
+      }
+    }
+  },
+
+  花海甘露之光: {
+    2: attr('hpPct', 20),
+    4: {
+      title: '5层Buff下提高元素战技与元素爆发伤害50%',
+      data: {
+        eDmg: 50,
+        qDmg: 50
       }
     }
   }

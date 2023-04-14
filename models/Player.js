@@ -81,6 +81,8 @@ class Player extends Base {
     data = await global.dbHelper.get("genshin_panel", {uid: this.uid})
     if (data) {
       data = data.data
+    }else {
+      return
     }
     this.setBasicData(data)
     if (data.chars) {

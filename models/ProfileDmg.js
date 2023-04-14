@@ -7,6 +7,7 @@ const DmgBuffs = require( './profile/DmgBuffs.js')
 const DmgAttr = require( './profile/DmgAttr.js')
 const DmgCalc = require( './profile/DmgCalc.js')
 const common = require('../../lib/common/common.js')
+const Common = require('../components/Common')
 
 class ProfileDmg extends Base {
   constructor (profile = {}) {
@@ -19,9 +20,12 @@ class ProfileDmg extends Base {
   }
 
   static dmgRulePath (name) {
-    let path = `${common.getPluginsPath()}/miao-plugin/resources/meta/character/${name}/calc_auto.js`
-    // &&Common.cfg('teamCalc')
+    let path = `${common.getPluginsPath()}/miao-plugin/resources/meta/character/${name}/calc_user.js`
     if (fs.existsSync(path)) {
+      return path
+    }
+    path = `${common.getPluginsPath()}/miao-plugin/resources/meta/character/${name}/calc_auto.js`
+    if (fs.existsSync(path) && Common.cfg('teamCalc')) {
       return path
     }
     path = `${common.getPluginsPath()}/miao-plugin/resources/meta/character/${name}/calc.js`

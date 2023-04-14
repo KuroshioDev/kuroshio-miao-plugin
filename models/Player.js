@@ -17,7 +17,7 @@ const Profile = require( './player/Profile.js')
 const { Logger } = require('koishi')
 const logger = new Logger('Player')
 
-Data.createDir('/data/UserData')
+//Data.createDir('/data/UserData')
 
 class Player extends Base {
   constructor (uid) {
@@ -31,7 +31,7 @@ class Player extends Base {
       return cacheObj
     }
     this.uid = uid
-    this.reload()
+    // this.reload()
     return this._cache(100)
   }
 
@@ -46,15 +46,16 @@ class Player extends Base {
     return ret
   }
 
-  static create (e) {
+  static async create(e) {
     if (e?._mys?.uid || e.uid) {
       // 传入为e
       let player = new Player(e?._mys?.uid || e.uid)
       player.e = e
+      await player.reload()
       return player
     } else {
       let player = new Player(e)
-      player.e = e
+      await player.reload()
       return player
     }
   }
@@ -65,19 +66,22 @@ class Player extends Base {
     return Serv.name
   }
 
-  static delByUid (uid) {
-    let player = Player.create(uid)
+  static async delByUid(uid) {
+    let player = await Player.create(uid)
     if (player) {
-      player.del()
+      await player.del()
     }
   }
 
   /**
    * 重新加载json文件
    */
-  reload () {
+  async reload() {
     let data
-    data = Data.readJSON(`/data/UserData/${this.uid}.json`, 'root')
+    data = await global.dbHelper.get("genshin_panel", {uid: this.uid})
+    if (data) {
+      data = data.data
+    }
     this.setBasicData(data)
     if (data.chars) {
       this.setAvatars(data.chars)
@@ -87,7 +91,7 @@ class Player extends Base {
       this._ck = data._ck
     }
     if (!data.avatars) {
-      this.save()
+      await this.save()
     }
   }
 
@@ -96,7 +100,7 @@ class Player extends Base {
    * @param flag false时暂时禁用保存，true时启用保存，并保存数据
    * @returns {boolean}
    */
-  save (flag = null) {
+  async save(flag = null) {
     if (flag === true) {
       this._save = true
     } else if (flag === false || this._save === false) {
@@ -111,13 +115,15 @@ class Player extends Base {
     if (this._ck) {
       ret._ck = this._ck
     }
-    Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
+    await global.dbHelper.upsert("genshin_panel", {uid: this.uid, data: ret, update_time: new Date()})
+    //Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
   }
 
-  del () {
+  async del() {
     try {
-      Data.delFile(`/data/UserData/${this.uid}.json`, 'root')
-      ProfileRank.delUidInfo(this.uid)
+      await global.dbHelper.remove("genshin_panel", {uid: this.uid})
+      //Data.delFile(`/data/UserData/${this.uid}.json`, 'root')
+      await ProfileRank.delUidInfo(this.uid)
       this._delCache()
       logger.info(`【面板数据删除】${this.uid}本地文件数据已删除...`)
     } catch (e) {
@@ -282,7 +288,7 @@ class Player extends Base {
   }
 
   async refresh (cfg) {
-    this.save(false)
+    await this.save(false)
     try {
       if (cfg.index || cfg.index === 0) {
         await this.refreshMysInfo(cfg.index)
@@ -300,7 +306,7 @@ class Player extends Base {
       logger.info(`刷新uid${this.uid}数据遇到错误...`)
       console.log(e)
     }
-    this.save(true)
+    await this.save(true)
   }
 
   async refreshAndGetAvatarData (cfg) {

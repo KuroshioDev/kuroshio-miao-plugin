@@ -2,9 +2,12 @@ const fs = require( 'fs')
 const lodash = require( 'lodash')
 const cfgData = require( './cfg/CfgData.js')
 const common = require('../../lib/common/common.js')
+const Version = require('../components/Version')
 
 const _cfgPath = `${common.getPluginsPath()}/miao-plugin/components/`
 let cfg = {}
+let miaoCfg = {}
+
 
 // 会触发HMR无限重载文件,所以注释
 try {
@@ -16,6 +19,9 @@ try {
 
 let Cfg = {
   get (rote) {
+    if (Version.isMiao && miaoCfg[rote]) {
+      return true
+    }
     return lodash.get(cfg, rote)
   },
   set (rote, val) {

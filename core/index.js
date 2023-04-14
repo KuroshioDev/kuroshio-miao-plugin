@@ -10,8 +10,10 @@ const common = require( "../../lib/common/common")
 const YAML = require('yaml')
 const gachaApp = require('./entrace/gacha.js')
 const helpApp = require('./entrace/help.js')
+const initDB = require("./db.js");
 
 const logger = new Logger("Kuroshio-Genshin-Plugin")
+
 class MiaoPlugin {
   constructor(ctx, config) {
     // ready
@@ -20,6 +22,7 @@ class MiaoPlugin {
         fs.readFileSync(`${common.getPluginsPath()}/miao-plugin/core/locales/zh.yml`, 'utf8')
       )
       ctx.i18n.define('zh', locale)
+      initDB(ctx)
       this.apps = await init()
       new wikiApp(this.apps, ctx, config)
       new profileApp(this.apps, ctx, config)

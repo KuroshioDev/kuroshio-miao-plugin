@@ -27,6 +27,8 @@ async function uploadCharacterImg (e) {
   if (msg.includes('面板')) {
     isProfile = true
     regRet = profileRegex.exec(msg)
+  } else {
+    isProfile = false
   }
 
   // 通过解析正则获取消息中的角色名
@@ -135,7 +137,7 @@ async function saveImages (e, name, imageMessages) {
     imgCount++
     logger.info(`添加成功: ${path}/${fileName}`)
   }
-  e.reply([segment.at(e.user_id, senderName), `\n成功添加${imgCount}张${name}图片。`])
+  e.reply([segment.at(e.user_id, senderName), `\n成功添加${imgCount}张${name}${isProfile ? '面板图' : '图片'}。`])
   return true
 }
 
@@ -237,7 +239,7 @@ async function profileImgList (e) {
       // 合并转发最多99？ 但是我感觉不会有这么多先不做处理
       console.log(`${path}${imgs[i]}`)
       msglist.push({
-        message: [`${i + 1}.`, segment.image(`${path}/${imgs[i]}`)],
+        message: [`${i + 1}.`, segment.image(`file://${path}/${imgs[i]}`)],
         nickname: nickname,
         user_id: Bot.uin
       })

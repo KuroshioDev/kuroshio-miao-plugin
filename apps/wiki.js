@@ -1,7 +1,6 @@
 const App = require( '../components/App.js')
 const Calendar = require( './wiki/Calendar.js')
 const CharWiki = require( './wiki/CharWiki.js')
-
 let app = App.init({
   id: 'wiki',
   name: '角色资料'

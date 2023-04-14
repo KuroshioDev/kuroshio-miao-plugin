@@ -27,7 +27,7 @@ let Avatar = {
       if (!char.isRelease) {
         avatar = { id: char.id, name: char.name, detail: false }
       } else {
-        let player = Player.create(e)
+        let player = await Player.create(e)
         await player.refreshMysDetail(1)
         await player.refreshTalent(char.id, 1)
         avatar = player.getAvatar(char.id)
@@ -46,7 +46,7 @@ let Avatar = {
     }
     let bg = char.getCardImg(Cfg.get('charPicSe', false))
     if (renderType === 'photo') {
-      e.reply(segment.image(process.cwd() + '/plugins/miao-plugin/resources/' + bg.img))
+      e.reply(segment.image(`file://${process.cwd()}/plugins/miao-plugin/resources/${bg.img}`))
       return true
     }
     let uid = e.uid || (e.targetUser && e.targetUser.uid)

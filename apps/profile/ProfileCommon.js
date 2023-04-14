@@ -61,6 +61,7 @@ const _getTargetUid = async function (e) {
     uid = user.uid
     if ((!uid || !uidReg.test(uid)) && !e._replyNeedUid) {
       e.reply('请先发送【#绑定+你的UID】来绑定查询目标')
+      e._replyNeedUid = true
       return false
     }
   } catch (err) {
@@ -82,7 +83,7 @@ async function getProfileRefresh (e, avatar) {
   if (!char) {
     return false
   }
-  let player = Player.create(e)
+  let player = await Player.create(e)
   let profile = player.getProfile(char.id)
   if (!profile || !profile.hasData) {
     logger.info(`本地无UID:${player.uid}的${char.name}面板数据，尝试自动请求...`)

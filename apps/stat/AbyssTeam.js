@@ -10,7 +10,7 @@ async function AbyssTeam (e) {
   if (!mys || !mys.uid || !mys.isSelfCookie) {
     return true
   }
-  let player = Player.create(e)
+  let player = await Player.create(e)
   await player.refreshMysDetail(2)
   await player.refreshTalent()
 

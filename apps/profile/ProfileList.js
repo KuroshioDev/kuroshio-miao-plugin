@@ -5,6 +5,7 @@ const Player = require( '../../models/Player.js')
 const Character = require( '../../models/Character.js')
 const Data = require( '../../components/Data.js')
 const Common = require( '../../components/Common.js')
+const MysInfo = require("../../../genshin/model/mys/mysInfo");
 
 const ProfileList = {
   /**
@@ -15,11 +16,12 @@ const ProfileList = {
   async refresh (e) {
     let uid = await getTargetUid(e)
     if (!uid) {
+      e._replyNeedUid || e.reply('请先发送【#绑定+你的UID】来绑定查询目标')
       return true
     }
 
     // 数据更新
-    let player = Player.create(e)
+    let player = await Player.create(e)
     await player.refreshProfile(2)
 
     if (!player?._update?.length) {
@@ -33,7 +35,7 @@ const ProfileList = {
           ret[char.name] = true
         }
       })
-      if (ret.length === 0) {
+      if (lodash.isEmpty(ret)) {
         e._isReplyed || e.reply('获取角色面板数据失败，未能请求到角色数据。请确认角色已在游戏内橱窗展示，并开放了查看详情。设置完毕后请5分钟后再进行请求~')
         e._isReplyed = true
       } else {
@@ -41,7 +43,6 @@ const ProfileList = {
         return await ProfileList.render(e)
       }
     }
-
     return true
   },
 
@@ -54,8 +55,10 @@ const ProfileList = {
   async render (e) {
     let uid = await getTargetUid(e)
     if (!uid) {
+      e._replyNeedUid || e.reply('请先发送【#绑定+你的UID】来绑定查询目标')
       return true
     }
+
     let isSelfUid = false
     if (e.runtime) {
       let uids = e.runtime?.user?.ckUids || []
@@ -75,7 +78,7 @@ const ProfileList = {
     }
     const cfg = await Data.importCfg('cfg')
     // 获取面板数据
-    let player = Player.create(e)
+    let player = await Player.create(e)
     if (!player.hasProfile) {
       await player.refresh({ profile: true })
     }
@@ -142,6 +145,7 @@ const ProfileList = {
    * @returns {Promise<boolean>}
    */
   async del (e) {
+    e = this.e
     let ret = /^#(删除全部面板|删除面板|删除面板数据)\s*(\d{9})?$/.exec(e.msg)
     let uid = await getTargetUid(e)
     if (!uid) {
@@ -149,7 +153,7 @@ const ProfileList = {
     }
     let targetUid = ret[2]
 
-    let user = e?.runtime?.user || {}
+    let user = e?.runtime?.user || await MysInfo.getNoteUser(e) || {}
     if (!user.hasCk && !e.isMaster) {
       e.reply('为确保数据安全，目前仅允许绑定CK用户删除自己UID的面板数据，请联系Bot主人删除...')
       return true
@@ -166,7 +170,7 @@ const ProfileList = {
       return true
     }
 
-    Player.delByUid(targetUid)
+    await Player.delByUid(targetUid)
     e.reply(`UID${targetUid}的本地数据已删除，排名数据已清除...`)
     return true
   }

@@ -152,13 +152,11 @@ const ProfileChange = {
    * @param charid
    * @param ds
    * @returns {ProfileData|boolean}
-   */
-  getProfile (uid, charid, ds) {
+   */ async getProfile(uid, charid, ds) {
     if (!charid) {
       return false
     }
-    let player = Player.create(uid)
-
+    let player = await Player.create(uid)
     let source = player.getProfile(charid)
     let dc = ds.char || {}
     if (!source || !source.hasData) {
@@ -176,7 +174,7 @@ const ProfileChange = {
       profiles[`${player.uid}:${source.id}`] = source
     }
     // 获取source
-    let getSource = function (cfg) {
+    let getSource = async function (cfg) {
       if (!cfg || !cfg.char) {
         return source
       }
@@ -184,7 +182,7 @@ const ProfileChange = {
       let id = cfg.char || source.id
       let key = cuid + ':' + id
       if (!profiles[key]) {
-        let cPlayer = Player.create(cuid)
+        let cPlayer = await Player.create(cuid)
         profiles[key] = cPlayer.getProfile(id) || {}
       }
       return profiles[key]?.id ? profiles[key] : source
@@ -203,7 +201,8 @@ const ProfileChange = {
 
     // 设置武器
     let wCfg = ds.weapon || {}
-    let wSource = getSource(wCfg).weapon || {}
+    let sourceWeapon = await getSource(wCfg)
+    let wSource = sourceWeapon?.weapon || {}
     let weapon = Weapon.get(wCfg?.weapon || wSource?.name || defWeapon[char.weaponType], char.weaponType)
     if (!weapon || weapon.type !== char.weaponType) {
       weapon = Weapon.get(defWeapon[char.weaponType])
@@ -223,15 +222,15 @@ const ProfileChange = {
     if (ds?.char?.talent) {
       ret.setTalent(ds?.char?.talent, 'level')
     } else {
-      ret.setTalent(source?.originalTalent || { a: 9, e: 9, q: 9 }, 'original')
+      ret.setTalent(source?.originalTalent || {a: 9, e: 9, q: 9}, 'original')
     }
 
     // 设置圣遗物
-    let artis = getSource(ds.artis)?.artis?.artis || {}
-
+    let artis = await getSource(ds.artis)
+    artis = artis?.artis?.artis || {}
     for (let idx = 1; idx <= 5; idx++) {
       if (ds['arti' + idx]) {
-        let source = getSource(ds['arti' + idx])
+        let source = await getSource(ds['arti' + idx])
         if (source && source.artis && source.artis[idx]) {
           artis[idx] = source.artis[idx]
         }

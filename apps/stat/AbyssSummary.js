@@ -22,7 +22,7 @@ async function AbyssSummary (e) {
   }
   let ret = {}
   let uid = mys.uid
-  let player = Player.create(e)
+  let player = await Player.create(e)
   let resDetail, resAbyss
   try {
     resAbyss = await mys.getSpiralAbyss(1)

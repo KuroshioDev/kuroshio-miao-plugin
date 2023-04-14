@@ -38,7 +38,7 @@ let Gacha = {
       save_id: uid,
       uid,
       gacha,
-      face: Gacha.getFace(uid)
+      face: await Gacha.getFace(uid)
     }, { e, scale: 1.4, retMsgId: true })
   },
   async stat (e) {
@@ -68,12 +68,12 @@ let Gacha = {
       save_id: uid,
       uid,
       gacha,
-      face: Gacha.getFace(uid)
+      face: await Gacha.getFace(uid)
     }, { e, scale: 1.4 })
   },
 
-  getFace (uid) {
-    let player = Player.create(uid)
+  async getFace(uid) {
+    let player = await Player.create(uid)
 
     let faceChar = Character.get(player.face || 10000014)
     let imgs = faceChar?.imgs

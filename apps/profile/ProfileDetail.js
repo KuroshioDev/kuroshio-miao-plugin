@@ -32,7 +32,7 @@ let ProfileDetail = {
         return true
       }
       e.uid = pc.uid || await e.runtime.getUid()
-      profileChange = ProfileChange.getProfile(e.uid, pc.char, pc.change)
+      profileChange = await ProfileChange.getProfile(e.uid, pc.char, pc.change)
       if (profileChange && profileChange.char) {
         msg = `#${profileChange.char?.name}${pc.mode || '面板'}`
         e._profile = profileChange
@@ -156,6 +156,7 @@ let ProfileDetail = {
     if (mode === 'weapon') {
       wCfg = weapon.calcAttr(w.level, w.promote)
       wCfg.info = weapon.getAffixInfo(weapon.affix)
+      wCfg.weapons = await ProfileWeapon.calc(profile)
     }
 
     let enemyLv = await selfUser.getCfg('char.enemyLv', 91)

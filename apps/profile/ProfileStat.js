@@ -24,7 +24,7 @@ const ProfileStat = {
 
     const uid = mys.uid
 
-    let player = Player.create(e)
+    let player = await Player.create(e)
 
     let avatarRet = await player.refreshAndGetAvatarData({
       index: 2,

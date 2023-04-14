@@ -9,6 +9,7 @@ const { getTargetUid, profileHelp, getProfileRefresh } = require( './ProfileComm
 const Artifact = require( '../../models/Artifact.js')
 const Character = require( '../../models/Character.js')
 const ProfileArtis = require( '../../models/ProfileArtis.js')
+const ProfileData = require('../../models/ProfileData.js')
 const Player = require( '../../models/Player.js')
 
 /*
@@ -57,9 +58,11 @@ async function profileArtisList (e) {
   }
 
   let artis = []
-  let player = Player.create(uid)
-  player.forEachAvatar((avatar) => {
-    let profile = avatar.getProfile()
+  let player = await Player.create(uid)
+  player.forEachAvatar(async (avatar) => {
+    let profile = new ProfileData(avatar.toJSON())
+    profile.initArtis()
+    profile.setArtis(avatar.artis)
     if (!profile) {
       return true
     }

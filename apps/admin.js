@@ -5,6 +5,7 @@ const { Cfg, Common, Data, App } = require( '../components/index.js')
 const {Logger} = require("koishi")
 const logger = new Logger('admin')
 
+
 let keys = lodash.map(Cfg.getCfgSchemaMap(), (i) => i.key)
 let app = App.init({
   id: 'admin',
@@ -76,7 +77,8 @@ async function sysCfg (e) {
   return await Common.render('admin/index', {
     schema,
     cfg,
-    imgPlus
+    imgPlus,
+    isMiao: Version.isMiao
   }, { e, scale: 1.4 })
 }
 

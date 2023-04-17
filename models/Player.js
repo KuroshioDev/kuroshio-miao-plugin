@@ -169,6 +169,9 @@ class Player extends Base {
   getAvatar (id, create = false) {
     let char = Character.get(id)
     let avatars = this._avatars
+    if(!avatars) {
+      return false
+    }
     // 兼容处理旅行者的情况
     if (char.isTraveler && !create) {
       id = avatars['10000005'] ? 10000005 : 10000007

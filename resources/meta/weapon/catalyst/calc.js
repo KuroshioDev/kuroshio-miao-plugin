@@ -147,6 +147,12 @@ module.exports =function (step, staticStep) {
       refine: {
         dmg: step(10, 4)
       }
+    },
+    碧落之珑: {
+      title: '基于生命值提升元素伤害[dmg]%',
+      data: {
+        dmg: ({ attr, calc, refine }) => Math.min( step(12,8)[refine] , calc(attr.hp) / 1000 * step(0.3, 0.2)[refine] )  
+      }
     }
   }
 }

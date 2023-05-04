@@ -10,7 +10,7 @@ const ProfileData = require("../../models/ProfileData");
 const ProfileDetail = require("./ProfileDetail");
 
 async function groupRank (e) {
-  const groupRank = e.config.groupRank
+  const groupRank = Common.cfg('groupRank')
   let msg = e.original_msg || e.msg
   let type = ''
   if (/(排名|排行|列表)/.test(msg)) {

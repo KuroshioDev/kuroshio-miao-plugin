@@ -4,11 +4,11 @@
 * */
 
 const miaoApi = {
-  listApi: ({ url, uid, diyCfg }) => {
+  listApi: ({ url, uid, diyCfg, game = 'gs' }) => {
     let qq = /\d{5,12}/.test(diyCfg.qq) ? diyCfg.qq : 'none'
     let token = diyCfg.token
-    url = url || 'http://miaoapi.cn/'
-    return `${url}profile/data?uid=${uid}&qq=${qq}&token=${token}&version=2`
+    url = url || 'http://49.232.91.210/'
+    return `${url}profile/data?uid=${uid}&qq=${qq}&token=${token}&version=2&game=${game}`
   }
 }
 
@@ -28,10 +28,27 @@ exports.mggApi = {
   }
 }
 
-const requestInterval = 5
+exports.hutaoApi = {
+  url: 'http://enka-api.hut.ao/',
+  userAgent: 'Snap Hutao/miao',
+  listApi: ({ url, uid, diyCfg }) => {
+    return `${url}/${uid}/`
+  }
+}
 
+
+const requestInterval = 3
 const isSys = true
 
+const homoApi = {
+  url: 'https://api.mihomo.me/sr_info',
+  userAgent: 'Miao-Plugin/3.1',
+  listApi: ({ url, uid, diyCfg }) => {
+    return `${url}/${uid}`
+  }
+}
+
+exports.homoApi = homoApi
 exports.miaoApi = miaoApi
 exports.requestInterval = requestInterval
 exports.isSys = isSys

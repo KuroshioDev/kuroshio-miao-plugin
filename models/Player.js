@@ -202,10 +202,11 @@ class Player extends Base {
         id = avatars['10000005'] ? 10000005 : 10000007
       }
     }
-    if (!avatars[id] && create) {
+    if (avatars && !avatars[id] && create) {
       avatars[id] = AvatarData.create({ id }, this.game)
     }
-    return avatars[id] || false
+    if(!avatars || !avatars[id]) return false
+    return avatars[id]
   }
 
   // 异步循环角色

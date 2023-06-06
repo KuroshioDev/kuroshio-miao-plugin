@@ -1,6 +1,7 @@
 const lodash = require( 'lodash')
 const Base = require( './Base.js')
 const moment = require( 'moment')
+const Format = require('../components/Format')
 // const { ProfileData } = require( './ProfileData.js')
 const Character = require( './Character.js')
 const AvatarArtis = require( './AvatarArtis.js')
@@ -12,7 +13,7 @@ const Profile = require( './player/Profile.js')
 const charKey = 'name,abbr,sName,star,imgs,face,side,gacha,weaponTypeName'.split(',')
 
 class AvatarData extends Base {
-  constructor (ds = {}, source) {
+  constructor (ds = {}, game = 'gs') {
     super()
     let char = Character.get({ id: ds.id, elem: ds.elem })
     if (!char) {
@@ -20,8 +21,9 @@ class AvatarData extends Base {
     }
     this.id = char.id
     this.char = char
+    this.game = char.game || game
     this.initArtis()
-    this.setAvatar(ds, source)
+    this.setAvatar(ds)
   }
 
   get hasTalent () {
@@ -65,8 +67,10 @@ class AvatarData extends Base {
     return {
       enka: 'Enka.Network',
       miao: '喵喵Api',
-      mgg: 'MiniGG-API',
-      mys: '米游社'
+      mgg: 'MiniGG-Api',
+      hutao: 'Hutao-Enka',
+      mys: '米游社',
+      homo: 'Mihomo'
     }[this._source] || this._source
   }
 
@@ -84,8 +88,8 @@ class AvatarData extends Base {
     return ''
   }
 
-  static create (ds, source) {
-    let avatar = new AvatarData(ds)
+  static create (ds, game = 'gs') {
+    let avatar = new AvatarData(ds, game)
     if (!avatar) {
       return false
     }
@@ -93,7 +97,7 @@ class AvatarData extends Base {
   }
 
   initArtis () {
-    this.artis = new AvatarArtis(this.id)
+    this.artis = new AvatarArtis(this.id, this.game)
   }
 
   _get (key) {
@@ -124,11 +128,12 @@ class AvatarData extends Base {
     this._costume = ds.costume || this._costume || 0
     this.elem = ds.elem || this.elem || this.char.elem || ''
     this.promote = lodash.isUndefined(ds.promote) ? (this.promote || AttrCalc.calcPromote(this.level)) : (ds.promote || 0)
-
-    this._source = ds._source || ds.dataSource || this._source || ''
+    this.trees = ds.trees || this.trees || []
+    this._source = ds._source || this._source || ''
     this._time = ds._time || this._time || now
     this._update = ds._update || this._update || ds._time || now
     this._talent = ds._talent || this._talent || ds._time || now
+
     // 存在数据源时更新时间
     if (source) {
       this._update = now
@@ -143,12 +148,13 @@ class AvatarData extends Base {
   }
 
   setWeapon (ds = {}) {
-    let w = Weapon.get(ds.name)
+    let w = Weapon.get(ds.name || ds.id, this.game)
     if (!w) {
       return false
     }
     this.weapon = {
-      name: ds.name,
+      id: ds.id || w.id,
+      name: ds.name || w.name,
       level: ds.level || ds.lv || 1,
       promote: lodash.isUndefined(ds.promote) ? AttrCalc.calcPromote(ds.level || ds.lv || 1) : (ds.promote || 0),
       affix: ds.affix,
@@ -157,6 +163,27 @@ class AvatarData extends Base {
     if (this.weapon.level < 20) {
       this.weapon.promote = 0
     }
+  }
+
+  getWeaponDetail () {
+    if (this.isGs) {
+      return this.weapon
+    }
+    let ret = {
+      ...this.weapon
+    }
+    if (!ret.id) {
+      return {}
+    }
+    let wData = Weapon.get(ret.id, this.game)
+    ret.splash = wData.imgs.gacha
+    let attrs = wData.calcAttr(ret.level, ret.promote)
+    lodash.forEach(attrs, (val, key) => {
+      attrs[key] = Format.comma(val, 1)
+    })
+    ret.attrs = attrs
+    ret.desc = wData.getAffixDesc(ret.affix)
+    return ret
   }
 
   setTalent (ds = false, mode = 'original', updateTime = '') {
@@ -192,18 +219,28 @@ class AvatarData extends Base {
 
   // toJSON 供保存使用
   toJSON () {
+    let keys = this.isGs ?
+      'name,id,elem,level,promote,fetter,costume,cons,talent:originalTalent' :
+      'name,id,elem,level,promote,cons,talent:originalTalent,trees'
     return {
-      ...this.getData('name,id,elem,level,promote,fetter,costume,cons,talent:originalTalent'),
-      weapon: Data.getData(this.weapon, 'name,level,promote,affix'),
+      ...this.getData(keys),
+      weapon: Data.getData(this.weapon, this.isGs ? 'name,level,promote,affix' : 'id,level,promote,affix'),
       ...this.getData('artis,_source,_time,_update,_talent')
     }
   }
 
   getDetail (keys = '') {
     let imgs = this.char.getImgs(this.costume)
-    return {
-      ...(this.getData(keys || 'id,name,level,star,cons,fetter,elem,abbr,weapon,talent,artisSet') || {}),
-      ...Data.getData(imgs, 'face,qFace,side,gacha')
+    if (this.isGs) {
+      return {
+        ...(this.getData(keys || 'id,name,level,star,cons,fetter,elem,abbr,weapon,talent,artisSet') || {}),
+        ...Data.getData(imgs, 'face,qFace,side,gacha')
+      }
+    } else {
+      return {
+        ...(this.getData(keys || 'id,name,level,star,cons,elem,abbr,weapon,talent,artisSet,trees') || {}),
+        ...Data.getData(imgs, 'face,qFace,gacha,preview')
+      }
     }
   }
 

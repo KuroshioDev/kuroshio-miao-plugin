@@ -3,19 +3,31 @@
 * */
 const Base = require( './Base.js')
 const { meta, artiMap, artiSetMap } = require( '../resources/meta/artifact/index.js')
+const artisBuffs = require( '../resources/meta/artifact/index.js').calc
 const Artifact = require( './Artifact.js')
+const srMeta = require('../resources/meta-sr/artifact/index.js')
+const artiMapSR = srMeta.artiMap
+const artisBuffsSR = srMeta.artisBuffs
+const artiSetMapSR = srMeta.artiSetMap
+const lodash = require( 'lodash')
 
 class ArtifactSet extends Base {
-  constructor (name) {
+  constructor (name, game = 'gs') {
     super()
-    let cache = this._getCache(`arti-set:${name}`)
+    let cache = this._getCache(`arti-set:${game}:${name}`)
     if (cache) {
       return cache
     }
-    let data = artiSetMap[name]
+    let data = (game === 'gs' ? artiSetMap : artiSetMapSR)[name]
     if (!data) {
-      return false
+      if (artiSetMapSR[name]) {
+        data = artiSetMapSR[name]
+        game = 'sr'
+      } else {
+        return false
+      }
     }
+    this.game = game
     this.meta = data
     return this._cache()
   }
@@ -33,22 +45,20 @@ class ArtifactSet extends Base {
     if (artiMap[name]) {
       return ArtifactSet.get(artiMap[name].set)
     }
+    if (artiMapSR[name]) {
+      return ArtifactSet.get(artiMap[name].set, 'sr')
+    }
     return false
   }
 
   static get (name) {
     if (artiSetMap[name]) {
-      return new ArtifactSet(name)
+      return new ArtifactSet(name, 'gs')
+    }
+    if (artiSetMapSR[name]) {
+      return new ArtifactSet(name, 'sr')
     }
     return false
-  }
-
-  getArtiName (idx = 1) {
-    return this.sets[idx]
-  }
-
-  getArti (idx = 1) {
-    return Artifact.get(this.getArtiName(idx))
   }
 
   static getArtiNameBySet (set, idx = 1) {
@@ -57,6 +67,22 @@ class ArtifactSet extends Base {
       return artiSet.getArtiName(idx)
     }
     return ''
+  }
+
+  static getArtisSetBuff (name, num, game = 'gs') {
+    let artiBuffsMap = game === 'sr' ? artisBuffsSR : artisBuffs
+    let ret = (artiBuffsMap[name] && artiBuffsMap[name][num]) || artiBuffsMap[name + num]
+    if (!ret) return false
+    if (lodash.isPlainObject(ret)) return [ret]
+    return ret
+  }
+
+  getArtiName (idx = 1) {
+    return this.sets[idx]
+  }
+
+  getArti (idx = 1) {
+    return Artifact.get(this.getArtiName(idx))
   }
 }
 

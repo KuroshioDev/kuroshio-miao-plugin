@@ -83,7 +83,8 @@ const CharImg = {
   },
 
   // 获取角色的图像资源数据
-  getImgs (name, costumeIdx = '', travelerElem = '', fileType = 'webp') {
+  getImgs (name, costumeIdx = '', travelerElem = '', weaponType = 'sword', talentCons) {
+    let fileType = 'webp'
     costumeIdx = costumeIdx === '2' ? '2' : ''
     let imgs = {}
     if (!['空', '荧', '旅行者'].includes(name)) {
@@ -114,9 +115,34 @@ const CharImg = {
     for (let i = 0; i <= 3; i++) {
       tAdd(`passive${i}`, `icons/passive-${i}`)
     }
-    for (let k of ['a', 'e', 'q']) {
-      tAdd(k, `icons/talent-${k}`)
+    imgs.a = `/common/item/atk-${weaponType}.webp`
+    imgs.e = talentCons.e === 3 ? imgs['cons3'] : imgs['cons5']
+    imgs.q = talentCons.q === 5 ? imgs['cons5'] : imgs['cons3']
+    return imgs
+  },
+  getImgsSr (name, talentCons) {
+    let fileType = 'webp'
+    const nPath = `/meta-sr/character/${name}/`
+    let imgs = {}
+    let add = (key, path, path2) => {
+      imgs[key] = `${nPath}${path}.${fileType}`
     }
+    add('face', 'imgs/face')
+    add('splash', 'imgs/splash')
+    add('preview', 'imgs/preview')
+    for (let i = 1; i <= 3; i++) {
+      add(`tree${i}`, `imgs/tree-${i}`)
+    }
+    for (let key of ['a', 'e', 'q', 't', 'z']) {
+      add(key, `imgs/talent-${key}`)
+    }
+    for (let i = 1; i <= 6; i++) {
+      if (i !==3 && i !== 5) {
+        add(`cons${i}`, `imgs/cons-${i}`)
+      }
+    }
+    imgs.cons3 = imgs[talentCons[3]]
+    imgs.cons5 = imgs[talentCons[5]]
     return imgs
   }
 }

@@ -2,64 +2,14 @@
 * 伤害计算 - Buff计算
 * */
 const lodash = require( 'lodash')
-const Data  = require( '../../components/Data.js')
 const ProfileArtis = require( '../ProfileArtis.js')
-const common = require('../../../lib/common/common.js')
-
-let weaponBuffs = {}
-let artisBuffs = {}
-
-// lazy load
-setTimeout(async function init () {
-  weaponBuffs = (await require(`${common.getPluginsPath()}/miao-plugin/resources/meta/weapon/index.js`)).weaponBuffs || {}
-  artisBuffs = (await require(`${common.getPluginsPath()}/miao-plugin/resources/meta/artifact/index.js`)).calc || {}
-})
+const Weapon = require('../Weapon')
+const ArtifactSet = require('../ArtifactSet')
 
 let DmgBuffs = {
-  // 圣遗物Buff
-  getArtisBuffs (artis = {}) {
-    let buffs = artisBuffs
-    let retBuffs = []
-    ProfileArtis._eachArtisSet(artis, (sets, num) => {
-      let buff = buffs[sets.name] && buffs[sets.name][num]
-      if (buff && !buff.isStatic) {
-        retBuffs.push({
-          ...buff,
-          title: `${sets.name}${num}：` + buff.title
-        })
-      }
-    })
-    return retBuffs
-  },
-
-  // 武器Buff
-  getWeaponBuffs (weaponName) {
-    let weaponCfg = weaponBuffs[weaponName] || []
-    if (lodash.isPlainObject(weaponCfg)) {
-      weaponCfg = [weaponCfg]
-    }
-    let ret = []
-    lodash.forEach(weaponCfg, (ds) => {
-      if (ds.isStatic) {
-        return true
-      }
-      if (!/：/.test(ds.title)) {
-        ds.title = `${weaponName}：${ds.title}`
-      }
-      if (ds.refine) {
-        ds.data = ds.data || {}
-        lodash.forEach(ds.refine, (r, key) => {
-          ds.data[key] = ({ refine }) => r[refine] * (ds.buffCount || 1)
-        })
-      }
-      ret.push(ds)
-    })
-    return ret
-  },
-
-  getBuffs (profile, buffs = []) {
-    let weaponBuffs = DmgBuffs.getWeaponBuffs(profile.weapon?.name || '')
-    let artisBuffs = DmgBuffs.getArtisBuffs(profile.artis)
+  getBuffs (profile, buffs = [], game = 'gs') {
+    let weaponBuffs = DmgBuffs.getWeaponBuffs(profile.weapon, game)
+    let artisBuffs = DmgBuffs.getArtisBuffs(profile.artis, game)
     buffs = lodash.concat(buffs, weaponBuffs, artisBuffs)
     let mKey = {
       vaporize: '蒸发',
@@ -69,6 +19,7 @@ let DmgBuffs = {
     let mKey2 = {
       aggravate: '超激化'
     }
+    buffs = lodash.filter(buffs, (b) => !!b)
     lodash.forEach(buffs, (buff, idx) => {
       if (lodash.isString(buff)) {
         if (mKey[buff]) {
@@ -89,6 +40,44 @@ let DmgBuffs = {
     })
     buffs = lodash.sortBy(buffs, ['sort'])
     return buffs
+  },
+  // 圣遗物Buff
+  getArtisBuffs (artis = {}, game = 'gs') {
+    let retBuffs = []
+    ProfileArtis._eachArtisSet(artis, (sets, num) => {
+      let buffs = ArtifactSet.getArtisSetBuff(sets.name, num, game)
+      if (lodash.isPlainObject(buffs)) {
+        buffs = [buffs]
+      }
+      lodash.forEach(buffs, (buff) => {
+        if (buff && !buff.isStatic) {
+          retBuffs.push({
+            ...buff,
+            title: `${sets.name}${num}：` + buff.title
+          })
+        }
+      })
+    })
+    return retBuffs
+  },
+
+  // 武器Buff
+  getWeaponBuffs (wData, game = 'gs') {
+    let weapon = Weapon.get(wData.name, game)
+    if (!weapon) {
+      return false
+    }
+    let affix = wData.refine || wData.affix
+    let weaponCfg = weapon.getWeaponAffixBuffs(affix, false)
+
+    let ret = []
+    lodash.forEach(weaponCfg, (ds) => {
+      if (ds.isStatic) {
+        return true
+      }
+      ret.push(ds)
+    })
+    return ret
   }
 }
 module.exports = DmgBuffs

@@ -17,21 +17,23 @@ const Profile = require( './player/Profile.js')
 const { Logger } = require('koishi')
 const logger = new Logger('Player')
 
+
 //Data.createDir('/data/UserData')
 
 class Player extends Base {
-  constructor (uid) {
+  constructor (uid, game = 'gs') {
     super()
     uid = uid?._mys?.uid || uid?.uid || uid
     if (!uid) {
       return false
     }
-    let cacheObj = this._getCache(`player:${uid}`)
+    let cacheObj = this._getCache(`player:${game}:${uid}`)
     if (cacheObj) {
       return cacheObj
     }
     this.uid = uid
-    // this.reload()
+    this.game = game
+    //this.reload()
     return this._cache(100)
   }
 
@@ -46,28 +48,36 @@ class Player extends Base {
     return ret
   }
 
-  static async create(e) {
+  get _file () {
+    if (this.isSr) {
+      return `/data/PlayerData/sr/${this.uid}.json`
+    } else {
+      return `/data/UserData/${this.uid}.json`
+    }
+  }
+
+  static async create(e, game = 'gs') {
     if (e?._mys?.uid || e.uid) {
       // 传入为e
-      let player = new Player(e?._mys?.uid || e.uid)
+      let player = new Player(e?._mys?.uid || e.uid, (game === 'sr' || e.isSr) ? 'sr' : 'gs')
       player.e = e
       await player.reload()
       return player
     } else {
-      let player = new Player(e)
+      let player = new Player(e, game)
       await player.reload()
       return player
     }
   }
 
   // 获取面板更新服务名
-  static getProfileServName (uid) {
-    let Serv = Profile.getServ(uid)
+  static getProfileServName (uid, game = 'gs') {
+    let Serv = Profile.getServ(uid, game)
     return Serv.name
   }
 
-  static async delByUid(uid) {
-    let player = await Player.create(uid)
+  static async delByUid(uid, game = 'gs') {
+    let player = await Player.create(uid, game)
     if (player) {
       await player.del()
     }
@@ -78,7 +88,11 @@ class Player extends Base {
    */
   async reload() {
     let data
-    data = await global.dbHelper.get("genshin_panel", {uid: this.uid})
+    if (this.isSr) {
+      data = await global.dbHelper.get("starrail_panel", {uid: this.uid})
+    }else {
+      data = await global.dbHelper.get("genshin_panel", {uid: this.uid})
+    }
     if (data) {
       data = data.data
     }else {
@@ -117,13 +131,26 @@ class Player extends Base {
     if (this._ck) {
       ret._ck = this._ck
     }
-    await global.dbHelper.upsert("genshin_panel", {uid: this.uid, data: ret, update_time: new Date()})
+    if(this.isSr) {
+      await global.dbHelper.upsert("starrail_panel", {uid: this.uid, data: ret, update_time: new Date()})
+    }else {
+      await global.dbHelper.upsert("genshin_panel", {uid: this.uid, data: ret, update_time: new Date()})
+    }
     //Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
+    // if (this.isSr) {
+    //   Data.writeJSON(`/data/PlayerData/sr/${this.uid}.json`, ret, 'root')
+    // } else {
+    //   Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
+    // }
   }
 
   async del() {
     try {
-      await global.dbHelper.remove("genshin_panel", {uid: this.uid})
+      if(this.isSr) {
+        await global.dbHelper.remove("starrail_panel", {uid: this.uid})
+      }else {
+        await global.dbHelper.remove("genshin_panel", {uid: this.uid})
+      }
       //Data.delFile(`/data/UserData/${this.uid}.json`, 'root')
       await ProfileRank.delUidInfo(this.uid)
       this._delCache()
@@ -169,15 +196,14 @@ class Player extends Base {
   getAvatar (id, create = false) {
     let char = Character.get(id)
     let avatars = this._avatars
-    if(!avatars) {
-      return false
-    }
-    // 兼容处理旅行者的情况
-    if (char.isTraveler && !create) {
-      id = avatars['10000005'] ? 10000005 : 10000007
+    if (this.isGs) {
+      // 兼容处理旅行者的情况
+      if (char.isTraveler && !create) {
+        id = avatars['10000005'] ? 10000005 : 10000007
+      }
     }
     if (!avatars[id] && create) {
-      avatars[id] = AvatarData.create({ id })
+      avatars[id] = AvatarData.create({ id }, this.game)
     }
     return avatars[id] || false
   }
@@ -233,16 +259,27 @@ class Player extends Base {
     if (!avatar.isProfile) {
       return false
     }
-    return ProfileData.create(avatar)
+    return ProfileData.create(avatar, this.e)
   }
 
   // 获取所有面板数据
   getProfiles () {
     let ret = {}
     lodash.forEach(this._avatars, (avatar) => {
-      let profile = ProfileData.create(avatar)
-      if (profile) {
-        ret[profile.id] = profile
+      if (avatar.id) {
+        if (avatar.game == "gs") {
+          if (avatar._source!="mys") {
+            let profile = ProfileData.create(avatar,this.e)
+            if (profile) {
+              ret[profile.id] = profile
+            }
+          }
+        }else {
+          let profile = ProfileData.create(avatar,this.e)
+          if (profile) {
+            ret[profile.id] = profile
+          }
+        }
       }
     })
     return ret
@@ -329,7 +366,7 @@ class Player extends Base {
       let ds = avatar.getDetail()
       ds.aeq = talent?.a?.original + talent?.e?.original + talent?.q?.original || 3
       avatarRet[ds.id] = ds
-      let profile = ProfileData.create(avatar)
+      let profile = ProfileData.create(avatar, this.e)
       // let profile = avatar.getProfile()
       if (profile) {
         let mark = profile.getArtisMark(false)

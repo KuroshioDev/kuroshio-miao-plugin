@@ -8,8 +8,8 @@ const Cfg =require('../components/Cfg')
 const CharImg = require( './character/CharImg.js')
 
 class ProfileData extends AvatarData {
-  constructor (ds = {}, calc = true) {
-    super(ds)
+  constructor (ds = {}, game = 'gs', calc = true) {
+    super(ds, game)
     if (calc) {
       this.calcAttr()
     }
@@ -27,11 +27,9 @@ class ProfileData extends AvatarData {
   get costumeSplash () {
     let costume = this._costume
     costume = this.char.checkCostume(costume) ? '2' : ''
-
     if (!Cfg.get('costumeSplash', true)) {
       return this.char.getImgs(this._costume).splash
     }
-
     let nPath = `meta/character/${this.name}`
     let isSuper = false
     let talent = this.talent ? lodash.map(this.talent, (ds) => ds.original).join('') : ''
@@ -39,32 +37,35 @@ class ProfileData extends AvatarData {
       isSuper = true
     }
     if (isSuper) {
-      return CharImg.getRandomImg(
-        [`profile/super-character/${this.name}`, `profile/normal-character/${this.name}`],
+      let imgPath = [`profile/super-character/${this.name}`, `profile/normal-character/${this.name}`,`profile/normal-character/${this.elem}/${this.name}`]
+      if (this.e && this.e.session && ['telegram','discord'].indexOf(this.e.session.platform)!= -1) {
+        imgPath.push(`profile/super-character/se-${this.elem}/${this.name}`)
+      }
+      return CharImg.getRandomImg(imgPath,
         [`${nPath}/imgs/splash0.webp`, `${nPath}/imgs/splash${costume}.webp`, `/${nPath}/imgs/splash.webp`]
       )
     } else {
-      return CharImg.getRandomImg(
-        [`profile/normal-character/${this.name}`],
-        [`${nPath}/imgs/splash${costume}.webp`, `/${nPath}/imgs/splash.webp`]
+      let imgPath = [`profile/normal-character/${this.name}`,`profile/normal-character/${this.elem}/${this.name}`]
+      return CharImg.getRandomImg(imgPath, [`${nPath}/imgs/splash${costume}.webp`, `/${nPath}/imgs/splash.webp`]
       )
     }
   }
 
   get hasDmg () {
-    return this.hasData && !!ProfileDmg.dmgRulePath(this.name)
+    return this.hasData && !!ProfileDmg.dmgRulePath(this.name, this.game)
   }
 
-  static create (ds) {
-    let profile = new ProfileData(ds)
+  static create (ds, e, game = 'gs') {
+    let profile = new ProfileData(ds, game)
     if (!profile) {
       return false
     }
+    profile.e = e
     return profile
   }
 
   initArtis () {
-    this.artis = new ProfileArtis(this.id, this.elem)
+    this.artis = new ProfileArtis(this.id, this.elem, this.game)
   }
 
   setAttr (ds) {
@@ -98,10 +99,10 @@ class ProfileData extends AvatarData {
   // 计算当前profileData的伤害信息
   async calcDmg ({ enemyLv = 91, mode = 'profile', dmgIdx = 0 }) {
     if (!this.dmg) {
-      let ds = this.getData('id,level,attr,cons,artis:artis.sets')
+      let ds = this.getData('id,level,attr,cons,artis:artis.sets,trees')
       ds.talent = lodash.mapValues(this.talent, 'level')
       ds.weapon = Data.getData(this.weapon, 'name,affix')
-      this.dmg = new ProfileDmg(ds)
+      this.dmg = new ProfileDmg(ds, this.game)
     }
     return await this.dmg.calcData({ enemyLv, mode, dmgIdx })
   }

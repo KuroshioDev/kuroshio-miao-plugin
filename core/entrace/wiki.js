@@ -1,7 +1,7 @@
 class wikiApp {
   constructor(app, ctx, config) {
     ctx.guild().command('genshin.miao.profile', { authority: 1 })
-      .shortcut(/^(#)?(.*)(天赋|技能|命座|命之座|资料|图鉴)$/).userFields(['id'])
+      .shortcut(/^(#)?(?!\*)(.*)(天赋|技能|命座|命之座|资料|图鉴)$/).userFields(['id'])
       .usage('直接发送#胡桃天赋，#胡桃命座，#胡桃图鉴')
       .action(async ({session}) => {
         let application = new app.wiki(ctx, session, config)

@@ -2,29 +2,28 @@ class profileApp {
   constructor(app, ctx, config) {
     ctx.guild().command('genshin.miao.panel.get', { authority: 1 })
     .alias('#更新面板')
-    .shortcut(/^#(全部面板更新|更新全部面板|获取游戏角色详情|更新面板|面板更新)/).userFields(['id'])
+    .shortcut(/^(#|\*)(星铁|原神)?(全部面板更新|更新全部面板|获取游戏角色详情|更新面板|面板更新)/).userFields(['id'])
     .action(async ({session}) => {
       let application = new app.profile(ctx, session, config)
       application.profileRefresh()
     })
 
     ctx.guild().command('genshin.miao.panel.detail', { authority: 1 })
-      .shortcut(/^#*(?!队伍)(?!删除)([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害[1-7]?)\s*(\d{9})*(.*[换变改].*)?$/).userFields(['id'])
-      .shortcut(/^#.+换.+$/)
+      .shortcut(/^(#|\*)(?!\*)*(?!队伍)(?!删除)([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害[1-7]?)\s*(\d{9})*(.*[换变改].*)?$/).userFields(['id'])
+      .shortcut(/^(#|\*).+换.+$/)
       .action(async ({session}) => {
         let application = new app.profile(ctx, session, config)
         application.profileDetail()
       })
       ctx.guild().command('genshin.miao.panel.list', { authority: 1 })
       .alias('#面板')
-      .shortcut(/^#(面板角色|角色面板|面板)(列表)?\s*(\d{9})?$/).userFields(['id'])
+      .shortcut(/^(#|\*)(星铁|原神)?(面板角色|角色面板|面板)(列表)?\s*(\d{9})?$/).userFields(['id'])
       .action(async ({session}) => {
         let application = new app.profile(ctx, session, config)
         application.profileList()
       })
       ctx.guild().command('genshin.miao.panel.stat', { authority: 1 }).userFields(['id'])
         .alias("#面板练度统计")
-        .shortcut(/^#*(我的)*(技能|天赋|武器|角色|练度|五|四|5|4|星)+(汇总|统计|列表)(force|五|四|5|4|星)*[ |0-9]*$/)
       .action(async ({session}) => {
         let application = new app.profile(ctx, session, config)
         application.profileStat()
@@ -65,7 +64,7 @@ class profileApp {
         application.rankList()
       })
       ctx.guild().command('genshin.miao.panel.top', { authority: 1 }).userFields(['id'])
-      .shortcut(/^#(群|群内)?(排名|排行)?(最强|最高|最高分|最牛|第一)+.+/)
+      .shortcut(/^#(群|群内)?(排名|排行)?(最强|最高|最高分|最牛|第一|极限)+.+/)
       .action(async ({session}) => {
         let application = new app.profile(ctx, session, config)
         application.groupProfile()
@@ -95,6 +94,7 @@ class profileApp {
       .alias("#删除面板")
       .shortcut(/^#(删除面板|删除面板数据)\s*(\d{9})?$/)
       .action(async ({session}) => {
+        console.log("--------------")
         let application = new app.profile(ctx, session, config)
         application.profileDel()
       })

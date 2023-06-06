@@ -15,7 +15,7 @@ exports.details = [{
     heal(talent.q['治疗量2'][0] * calc(attr.hp) / 100 + talent.q['治疗量2'][1] * 1)
 }]
 
-exports.defDmgIdx = 1
+
 exports.defDmgKey = 'qHeal'
 exports.mainAttr = 'atk,hp,cpct,cdmg,mastery'
 

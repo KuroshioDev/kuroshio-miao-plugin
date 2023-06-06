@@ -19,6 +19,7 @@ lodash.forEach(artis, (ds) => {
     if (as.name) {
       artiMap[as.name] = {
         set: ds.name,
+        name: as.name,
         idx
       }
       artiSet.sets[idx] = as.name

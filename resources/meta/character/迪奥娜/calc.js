@@ -13,6 +13,7 @@ exports.details = [{
   }
 }]
 
+exports.defDmgIdx = 1
 exports.mainAttr = 'atk,hp,cpct,cdmg'
 
 exports.buffs = [{

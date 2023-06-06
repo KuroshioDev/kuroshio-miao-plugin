@@ -25,7 +25,7 @@ exports.details = [{
   dmg: ({ attr, calc, talent }, { heal }) => heal(talent.q['持续治疗2'][0] * calc(attr.hp) / 100 + talent.q['持续治疗2'][1] * 1)
 }]
 
-exports.defDmgIdx = 1
+exports.defDmgIdx = 2
 exports.mainAttr = 'atk,hp,cpct,cdmg'
 
 exports.buffs = [{

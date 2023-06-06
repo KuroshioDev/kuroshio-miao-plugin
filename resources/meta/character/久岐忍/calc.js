@@ -17,7 +17,8 @@ exports.details = [{
   dmg: ({ talent, calc, attr }, { basic }) => basic(talent.q['单次伤害'] * calc(attr.hp) / 100, 'q')
 }]
 
-exports.defDmgIdx = 1
+
+exports.defDmgIdx = 0
 exports.mainAttr = 'hp,atk,cpct,cdmg,mastery'
 
 exports.buffs = [{

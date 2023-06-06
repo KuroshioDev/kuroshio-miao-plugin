@@ -11,6 +11,8 @@ const Character = require( '../../models/Character.js')
 const ProfileChange = require( './ProfileChange.js')
 const { profileArtis } = require( './ProfileArtis.js')
 const Weapon = require('../../models/Weapon')
+const { ProfileWeapon } = require('./ProfileWeapon.js')
+let diyCfg  ={}
 
 // 查看当前角色
 let ProfileDetail = {
@@ -31,8 +33,13 @@ let ProfileDetail = {
         e.reply('面板替换功能已禁用...')
         return true
       }
+      if (pc.game === 'sr') {
+        e.reply('星铁面板暂不支持面板替换，请等待后续升级...')
+        return true
+      }
       e.uid = pc.uid || await e.runtime.getUid()
-      profileChange = await ProfileChange.getProfile(e.uid, pc.char, pc.change)
+      profileChange = await ProfileChange.getProfile(e.uid, pc.char, pc.change, pc.game)
+
       if (profileChange && profileChange.char) {
         msg = `#${profileChange.char?.name}${pc.mode || '面板'}`
         e._profile = profileChange
@@ -44,8 +51,10 @@ let ProfileDetail = {
       e.uid = uidRet[0]
       msg = msg.replace(uidRet[0], '')
     }
-
-    let name = msg.replace(/#|老婆|老公/g, '').trim()
+    if (/^\*/.test(msg)) {
+      msg = msg.replace("*","#星铁")
+    }
+    let name = msg.replace(/#|老婆|老公|星铁|原神/g, '').trim()
     msg = msg.replace('面版', '面板')
     let dmgRet = /(?:伤害|武器)(\d?)$/.exec(name)
     let dmgIdx = 0
@@ -77,6 +86,9 @@ let ProfileDetail = {
     if (!char) {
       return false
     }
+    if (/星铁/.test(msg) || char.isSr) {
+      e.isSr = true
+    }
 
     let uid = e.uid || await getTargetUid(e)
     if (!uid) {
@@ -90,12 +102,14 @@ let ProfileDetail = {
       return true
     }
     if (!char.isRelease) {
-      if (!profileChange) {
-        e.reply('角色尚未实装')
-        return true
-      } else if (Cfg.get('notReleasedData') === false) {
-        e.reply('未实装角色面板已禁用...')
-        return true
+      if(this.e.session.platform == 'qqguild' && this.e.session.guildId != '9627516829995618702') {
+        if (!profileChange) {
+          e.reply('角色尚未实装')
+          return true
+        } else if (Cfg.get('notReleasedData') === false) {
+          e.reply('未实装角色面板已禁用...')
+          return true
+        }
       }
     }
 
@@ -133,33 +147,39 @@ let ProfileDetail = {
     let a = profile.attr
     let base = profile.base
     let attr = {}
-    lodash.forEach(['hp', 'def', 'atk', 'mastery'], (key) => {
+    let game = char.game
+    let isGs = game === 'gs'
+
+    lodash.forEach((isGs ? 'hp,def,atk,mastery' : 'hp,def,atk,speed').split(','), (key) => {
       let fn = (n) => Format.comma(n, key === 'hp' ? 0 : 1)
       attr[key] = fn(a[key])
       attr[`${key}Base`] = fn(base[key])
       attr[`${key}Plus`] = fn(a[key] - base[key])
     })
-    lodash.forEach(['cpct', 'cdmg', 'recharge', 'dmg'], (key) => {
+    lodash.forEach((isGs ? 'cpct,cdmg,recharge,dmg' : 'cpct,cdmg,recharge,dmg,effPct,stance').split(','), (key) => {
       let fn = Format.pct
       let key2 = key
-      if (key === 'dmg' && a.phy > a.dmg) {
-        key2 = 'phy'
+      if (key === 'dmg') {
+        if (isGs) {
+          if (a.phy > a.dmg) {
+            key2 = 'phy'
+          }
+        }
       }
       attr[key] = fn(a[key2])
       attr[`${key}Base`] = fn(base[key2])
       attr[`${key}Plus`] = fn(a[key2] - base[key2])
     })
 
-    let weapon = Weapon.get(profile.weapon.name)
+    let weapon = Weapon.get(profile?.weapon?.name, game)
     let w = profile.weapon
     let wCfg = {}
     if (mode === 'weapon') {
       wCfg = weapon.calcAttr(w.level, w.promote)
-      wCfg.info = weapon.getAffixInfo(weapon.affix)
       wCfg.weapons = await ProfileWeapon.calc(profile)
     }
 
-    let enemyLv = await selfUser.getCfg('char.enemyLv', 91)
+    let enemyLv = isGs ? (await selfUser.getCfg('char.enemyLv', 91)) : profile.level
     let dmgCalc = await ProfileDetail.getProfileDmgCalc({ profile, enemyLv, mode, params })
 
     let rank = false
@@ -169,11 +189,14 @@ let ProfileDetail = {
     }
 
     let artisDetail = profile.getArtisMark()
-    let artisKeyTitle = ProfileArtis.getArtisKeyTitle()
+    let artisKeyTitle = ProfileArtis.getArtisKeyTitle(game)
+    let data = profile.getData('name,abbr,cons,level,talent,dataSource,updateTime,imgs,costumeSplash')
+    data.weapon = profile.getWeaponDetail()
     let renderData = {
       save_id: uid,
       uid,
-      data: profile.getData('name,abbr,cons,level,weapon,talent,dataSource,updateTime,imgs,costumeSplash'),
+      game,
+      data,
       attr,
       elem: char.elem,
       dmgCalc,
@@ -206,8 +229,10 @@ let ProfileDetail = {
     })
     if (dmgCalc && dmgCalc.ret) {
       lodash.forEach(dmgCalc.ret, (ds) => {
-        ds.dmg = Format.comma(ds.dmg, 0)
-        ds.avg = Format.comma(ds.avg, 0)
+        if (ds.type !== 'text') {
+          ds.dmg = Format.comma(ds.dmg, 0)
+          ds.avg = Format.comma(ds.avg, 0)
+        }
         dmgData.push(ds)
       })
       lodash.forEach(dmgCalc.msg, (msg) => {

@@ -59,6 +59,7 @@ const ProfileChange = {
     ret.char = char.id
     ret.mode = regRet[3] === '换' ? '面板' : regRet[3]
     ret.uid = regRet[1] || regRet[4] || ''
+    ret.game = char.game
     msg = regRet[5]
 
     // 更换匹配
@@ -90,7 +91,7 @@ const ProfileChange = {
       let wRet = /^(?:等?级?([1-9][0-9])?级?)?\s*(?:([1-5一二三四五满])?精炼?([1-5一二三四五])?)?\s*(?:等?级?([1-9][0-9])?级?)?\s*(.*)$/.exec(txt)
       if (wRet && wRet[5]) {
         let weaponName = lodash.trim(wRet[5])
-        let weapon = Weapon.get(weaponName)
+        let weapon = Weapon.get(weaponName, ret.char.game)
         if (weapon || weaponName === '武器' || Weapon.isWeaponSet(weaponName)) {
           let affix = wRet[2] || wRet[3]
           affix = { 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 满: 5 }[affix] || affix * 1
@@ -151,12 +152,15 @@ const ProfileChange = {
    * @param uid
    * @param charid
    * @param ds
+   * @param game
    * @returns {ProfileData|boolean}
-   */ async getProfile(uid, charid, ds) {
+   */ async getProfile(uid, charid, ds, game = 'gs') {
     if (!charid) {
       return false
     }
-    let player = await Player.create(uid)
+
+    let player = await Player.create(uid, game)
+
     let source = player.getProfile(charid)
     let dc = ds.char || {}
     if (!source || !source.hasData) {
@@ -182,7 +186,7 @@ const ProfileChange = {
       let id = cfg.char || source.id
       let key = cuid + ':' + id
       if (!profiles[key]) {
-        let cPlayer = await Player.create(cuid)
+          let cPlayer = await Player.create(cuid, game)
         profiles[key] = cPlayer.getProfile(id) || {}
       }
       return profiles[key]?.id ? profiles[key] : source
@@ -196,49 +200,53 @@ const ProfileChange = {
       fetter: source.fetter || 10,
       elem: char.elem,
       dataSource: 'change',
+      _source: 'change',
       promote
-    }, false)
+    }, char.game, false)
 
     // 设置武器
     let wCfg = ds.weapon || {}
-    let sourceWeapon = await getSource(wCfg)
-    let wSource = sourceWeapon?.weapon || {}
-    let weapon = Weapon.get(wCfg?.weapon || wSource?.name || defWeapon[char.weaponType], char.weaponType)
-    if (!weapon || weapon.type !== char.weaponType) {
-      weapon = Weapon.get(defWeapon[char.weaponType])
-    }
-    let wDs = {
-      name: weapon.name,
-      star: weapon.star,
-      level: Math.min(weapon.maxLv || 90, wCfg.level || wSource.level || 90)
-    }
-    if (wSource.level === wDs.level) {
-      wDs.promote = wSource.promote
-    }
-    wDs.affix = Math.min(weapon.maxAffix || 5, wCfg.affix || ((wDs.star === 5 && wSource.star !== 5) ? 1 : (wSource.affix || 5)))
-    ret.setWeapon(wDs)
-
-    // 设置天赋
-    if (ds?.char?.talent) {
-      ret.setTalent(ds?.char?.talent, 'level')
-    } else {
-      ret.setTalent(source?.originalTalent || {a: 9, e: 9, q: 9}, 'original')
-    }
-
-    // 设置圣遗物
-    let artis = await getSource(ds.artis)
-    artis = artis?.artis?.artis || {}
-    for (let idx = 1; idx <= 5; idx++) {
-      if (ds['arti' + idx]) {
-        let source = await getSource(ds['arti' + idx])
-        if (source && source.artis && source.artis[idx]) {
-          artis[idx] = source.artis[idx]
-        }
+    let sourceWeapon=await getSource(wCfg)
+    let wSource = sourceWeapon.weapon || {}
+    let weapon = Weapon.get(wCfg?.weapon || wSource?.name || defWeapon[char.weaponType], char.game, char.weaponType)
+    if (char.isGs) {
+      if (!weapon || weapon.type !== char.weaponType) {
+        weapon = Weapon.get(defWeapon[char.weaponType], char.game)
       }
     }
-    ret.setArtis(artis)
-    ret.calcAttr()
-    return ret
+
+      let wDs = {
+        name: weapon.name,
+        star: weapon.star,
+        level: Math.min(weapon.maxLv || 90, wCfg.level || wSource.level || 90)
+      }
+      if (wSource.level === wDs.level) {
+        wDs.promote = wSource.promote
+      }
+      wDs.affix = Math.min(weapon.maxAffix || 5, wCfg.affix || ((wDs.star === 5 && wSource.star !== 5) ? 1 : (wSource.affix || 5)))
+      ret.setWeapon(wDs)
+
+      // 设置天赋
+      if (ds?.char?.talent) {
+        ret.setTalent(ds?.char?.talent, 'level')
+      } else {
+        ret.setTalent(source?.originalTalent || {a: 9, e: 9, q: 9}, 'original')
+      }
+
+      // 设置圣遗物
+      let artis = await getSource(ds.artis)
+      artis = artis?.artis?.artis || {}
+      for (let idx = 1; idx <= 5; idx++) {
+        if (ds['arti' + idx]) {
+          let source = await getSource(ds['arti' + idx])
+          if (source && source.artis && source.artis[idx]) {
+            artis[idx] = source.artis[idx]
+          }
+        }
+      }
+      ret.setArtis(artis)
+      ret.calcAttr()
+      return ret
+    }
   }
-}
 module.exports = ProfileChange

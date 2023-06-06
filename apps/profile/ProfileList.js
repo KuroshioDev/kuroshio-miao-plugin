@@ -14,6 +14,10 @@ const ProfileList = {
    * @returns {Promise<boolean|*>}
    */
   async refresh (e) {
+    let msg = e.original_msg || e.msg
+    if (/星铁/.test(msg) || /^\*/.test(msg)) {
+      e.isSr = true
+    }
     let uid = await getTargetUid(e)
     if (!uid) {
       e._replyNeedUid || e.reply('请先发送【#绑定+你的UID】来绑定查询目标')
@@ -53,6 +57,10 @@ const ProfileList = {
    */
 
   async render (e) {
+    let message = e.original_msg || e.msg
+    if (/星铁/.test(message) || /^\*/.test(message)) {
+      e.isSr = true
+    }
     let uid = await getTargetUid(e)
     if (!uid) {
       e._replyNeedUid || e.reply('请先发送【#绑定+你的UID】来绑定查询目标')
@@ -65,7 +73,7 @@ const ProfileList = {
       isSelfUid = uids.join(',').split(',').includes(uid + '')
     }
     let rank = false
-    let servName = Player.getProfileServName(uid)
+
     let hasNew = false
     let newCount = 0
 
@@ -79,11 +87,12 @@ const ProfileList = {
     const cfg = await Data.importCfg('cfg')
     // 获取面板数据
     let player = await Player.create(e)
+    let servName = Player.getProfileServName(uid, player.game)
     if (!player.hasProfile) {
       await player.refresh({ profile: true })
     }
     if (!player.hasProfile) {
-      e.reply(`本地暂无uid${uid}的面板数据...`)
+      e.reply(`本地暂无uid${uid}[${player.game}]的面板数据...`)
       return true
     }
     let profiles = player.getProfiles()

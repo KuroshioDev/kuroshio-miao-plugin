@@ -61,14 +61,14 @@ async function groupRank (e) {
       e.uid = uid
       return await ProfileDetail.render(e, char)
     } else {
-      if (mode === 'dmg' && !ProfileDmg.dmgRulePath(char.name)) {
+      if (mode === 'dmg' && !ProfileDmg.dmgRulePath(char.name, char.game)) {
         e.reply(`暂无排名：${char.name}暂不支持伤害计算，无法进行排名..`)
       } else {
         e.reply('暂无排名：请通过【#面板】查看角色面板以更新排名信息...')
       }
     }
   } else if (type === 'list') {
-    if (mode === 'dmg' && char && !ProfileDmg.dmgRulePath(char.name)) {
+    if (mode === 'dmg' && char && !ProfileDmg.dmgRulePath(char.name, char.game)) {
       e.reply(`暂无排名：${char.name}暂不支持伤害计算，无法进行排名..`)
     } else {
       let uids = []
@@ -125,12 +125,13 @@ async function refreshRank (e) {
     return true
   }
   e.reply('面板数据刷新中，等待时间可能较长，请耐心等待...')
+  let game = e.isSr ? 'sr' : 'gs'
   await ProfileRank.resetRank(groupId)
-  let groupUids = await Common.getGroupUids(e)
+  let groupUids = await Common.getGroupUids(e, game)
   let count = 0
   for (let qq in groupUids) {
     for (let { uid, type } of groupUids[qq]) {
-      let player = new Player(uid)
+      let player = new Player(uid, game)
       let profiles = player.getProfiles()
       // 刷新rankLimit
       await ProfileRank.setUidInfo({ uid, profiles, qq, uidType: type })

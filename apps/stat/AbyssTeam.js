@@ -6,9 +6,10 @@ const lodash = require( 'lodash')
 const Common = require( '../../components/Common.js')
 
 async function AbyssTeam (e) {
-  let mys = await MysApi.init(e, 'cookie')
-  if (!mys || !mys.uid || !mys.isSelfCookie) {
-    return true
+  let mys = await MysApi.init(e, 'all')
+  if (!mys || !mys.uid) {
+    e.reply(`请绑定ck后再使用${e.original_msg || e.msg}`)
+    return false
   }
   let player = await Player.create(e)
   await player.refreshMysDetail(2)

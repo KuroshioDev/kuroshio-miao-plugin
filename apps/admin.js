@@ -6,7 +6,6 @@ const {Logger} = require("koishi")
 const logger = new Logger('admin')
 const Version = require('../components/Version')
 
-
 let keys = lodash.map(Cfg.getCfgSchemaMap(), (i) => i.key)
 let app = App.init({
   id: 'admin',

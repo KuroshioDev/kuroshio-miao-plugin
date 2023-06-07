@@ -15,12 +15,14 @@ const ProfileList = {
    */
   async refresh (e) {
     let msg = e.original_msg || e.msg
+    let tip = "【#绑定+你的UID】"
     if (/星铁/.test(msg) || /^\*/.test(msg)) {
       e.isSr = true
+      tip = "【*绑定+你的UID】"
     }
     let uid = await getTargetUid(e)
     if (!uid) {
-      e._replyNeedUid || e.reply('请先发送【#绑定+你的UID】来绑定查询目标')
+      e._replyNeedUid || e.reply(`请先发送${tip}来绑定查询目标或者发送#扫码登录绑定`)
       return true
     }
 

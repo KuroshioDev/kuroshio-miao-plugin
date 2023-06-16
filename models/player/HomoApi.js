@@ -16,17 +16,17 @@ exports = {
 
   // 处理服务返回
   async response (data, req) {
-    if (!data.PlayerDetailInfo) {
+    if (!data.detailInfo) {
       return req.err('error', 60)
     }
-    let ds = data.PlayerDetailInfo
-    let ac = ds.AssistAvatar
+    let ds = data.detailInfo
+    let ac = ds.assistAvatarDetail
     let avatars = {}
     if (ac && !lodash.isEmpty(ac)) {
       avatars[ac.AvatarID] = ac
     }
-    lodash.forEach(ds.DisplayAvatarList, (ds) => {
-      avatars[ds.AvatarID] = ds
+    lodash.forEach(ds.avatarDetailList, (ds) => {
+      avatars[ds.avatarId] = ds
     })
 
     if (lodash.isEmpty(avatars)) {
@@ -42,7 +42,7 @@ exports = {
       lodash.forEach(data.avatars, (ds, id) => {
         let ret = HomoData.setAvatar(player, ds)
         if (ret) {
-          player._update.push(ds.AvatarID)
+          player._update.push(ds.avatarId)
         }
       })
     } catch (e) {
@@ -58,18 +58,18 @@ exports = {
 
 const HomoData = {
   setAvatar (player, data) {
-    let char = Character.get(data.AvatarID)
+    let char = Character.get(data.avatarId)
     if (!char) {
       return false
     }
     let avatar = player.getAvatar(char.id, true)
     let setData = {
-      level: data.Level,
-      promote: data.Promotion,
-      cons: data.Rank || 0,
-      weapon: Data.getData(data.EquipmentID, 'id:ID,promote:Promotion,level:Level,affix:Rank'),
-      ...HomoData.getTalent(data.BehaviorList, char),
-      artis: HomoData.getArtis(data.RelicList)
+      level: data.level,
+      promote: data.promotion,
+      cons: data.rank || 0,
+      weapon: Data.getData(data.equipment, 'id:tid,promote:promotion,level,affix:rank'),
+      ...HomoData.getTalent(data.skillTreeList, char),
+      artis: HomoData.getArtis(data.relicList)
     }
     avatar.setAvatar(setData, 'homo')
     return avatar
@@ -78,11 +78,11 @@ const HomoData = {
     let talent = {}
     let trees = []
     lodash.forEach(ds, (d) => {
-      let key = char.getTalentKey(d.BehaviorID)
+      let key = char.getTalentKey(d.pointId)
       if (key || d.Level > 1) {
-        talent[key || d.BehaviorID] = d.Level
+        talent[key || d.pointId] = d.level
       } else {
-        trees.push(d.BehaviorID)
+        trees.push(d.pointId)
       }
     })
     return { talent, trees }
@@ -91,18 +91,18 @@ const HomoData = {
     let ret = {}
     lodash.forEach(artis, (ds) => {
       let tmp = {
-        id: ds.ID,
-        level: ds.Level || 1,
-        mainId: ds.MainAffixID,
+        id: ds.tid,
+        level: ds.level || 1,
+        mainId: ds.mainAffixId,
         attrIds: []
       }
-      lodash.forEach(ds.RelicSubAffix, (s) => {
-        if (!s.SubAffixID) {
+      lodash.forEach(ds.subAffixList, (s) => {
+        if (!s.affixId) {
           return true
         }
-        tmp.attrIds.push([s.SubAffixID, s.Cnt, s.Step || 0].join(','))
+        tmp.attrIds.push([s.affixId, s.cnt, s.step || 0].join(','))
       })
-      ret[ds.Type] = tmp
+      ret[ds.type] = tmp
     })
     return ret
   }

@@ -9,6 +9,7 @@ const DmgAttr = require( './profile/DmgAttr.js')
 const DmgCalc = require( './profile/DmgCalc.js')
 const common = require('../../lib/common/common.js')
 const Common = require('../components/Common')
+const MiaoError = require('../components/MiaoError')
 
 class ProfileDmg extends Base {
   constructor (profile = {}, game = 'gs') {
@@ -99,7 +100,7 @@ class ProfileDmg extends Base {
     return false
   }
 
-  async calcData ({ enemyLv = 91, mode = 'profile', dmgIdx = 0 }) {
+  async calcData ({ enemyLv = 91, mode = 'profile', dmgIdx = 0, idxIsInput = false }) {
     if (!this.char || !this.profile) {
       return false
     }
@@ -130,11 +131,18 @@ class ProfileDmg extends Base {
     buffs = this.getBuffs(buffs)
 
     let { msg } = DmgAttr.calcAttr({ originalAttr, buffs, meta, params: defParams || {} })
+    let msgList = []
 
     let ret = []
     let detailMap = []
     let dmgRet = []
     let dmgDetail = {}
+
+    // 用户手动输入伤害序号
+    if (idxIsInput) {
+      // 从1开始，所以需要 - 1
+      dmgIdx = --dmgIdx < 0 ? 0 : dmgIdx
+    }
 
     if (mode === 'single') {
       dmgIdx = defDmgIdx > -1 ? defDmgIdx : 0
@@ -157,7 +165,7 @@ class ProfileDmg extends Base {
         detail = detail({ ...ds, attr, profile })
       }
       let params = lodash.merge({}, defParams, detail?.params || {})
-      let { attr } = DmgAttr.calcAttr({ originalAttr, buffs, meta, params, talent: detail.talent || '' })
+      let { attr, msg } = DmgAttr.calcAttr({ originalAttr, buffs, meta, params, talent: detail.talent || '' })
       if (detail.isStatic) {
         return
       }
@@ -181,12 +189,16 @@ class ProfileDmg extends Base {
           ...basicDmgRet
         })
       }
+      msgList.push(msg)
     })
 
     if (mode === 'dmg') {
       let detail
-      if (dmgIdx && detailMap[dmgIdx - 1]) {
-        detail = detailMap[dmgIdx - 1]
+      if (idxIsInput && detailMap[dmgIdx]) {
+        detail = detailMap[dmgIdx]
+      } else if (idxIsInput) {
+        // 当用户输入的下标错误时，提示错误
+        throw new MiaoError(`序号输入错误：${this.char.name}最多只支持${detailMap.length}种伤害计算哦`)
       } else if (!lodash.isUndefined(defDmgIdx) && details[defDmgIdx]) {
         detail = details[defDmgIdx]
       } else {
@@ -248,7 +260,9 @@ class ProfileDmg extends Base {
     }
     return {
       ret,
-      msg,
+      // 根据当前计算的伤害，显示对应的buff列表
+      msg: msgList[idxIsInput ? dmgIdx : (defDmgIdx > -1 ? defDmgIdx : dmgIdx)] || msg,
+      msgList,
       dmgRet,
       enemyName,
       dmgCfg: dmgDetail,

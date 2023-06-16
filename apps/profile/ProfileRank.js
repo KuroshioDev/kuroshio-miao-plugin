@@ -10,7 +10,7 @@ const ProfileData = require("../../models/ProfileData");
 const ProfileDetail = require("./ProfileDetail");
 
 async function groupRank (e) {
-  const groupRank = Common.cfg('groupRank')
+  const groupRank = e.config.groupRank
   let msg = e.original_msg || e.msg
   let type = ''
   if (/(排名|排行|列表)/.test(msg)) {
@@ -116,7 +116,7 @@ async function resetRank (e) {
  * @returns {Promise<boolean>}
  */
 async function refreshRank (e) {
-  let groupId = e.group_id
+  let groupId = e.group_id || ''
   if (!groupId) {
     return true
   }
@@ -127,25 +127,24 @@ async function refreshRank (e) {
   e.reply('面板数据刷新中，等待时间可能较长，请耐心等待...')
   let game = e.isSr ? 'sr' : 'gs'
   await ProfileRank.resetRank(groupId)
-  let groupUids = await Common.getGroupUids(e, game)
+  let uidMap = await ProfileRank.getUserUidMap(e, game)
   let count = 0
-  for (let qq in groupUids) {
-    for (let { uid, type } of groupUids[qq]) {
-      let player = new Player(uid, game)
-      let profiles = player.getProfiles()
-      // 刷新rankLimit
-      await ProfileRank.setUidInfo({ uid, profiles, qq, uidType: type })
-      let rank = await ProfileRank.create({ groupId, uid, qq })
-      for (let id in profiles) {
-        let profile = profiles[id]
-        if (!profile.hasData) {
-          continue
-        }
-        await rank.getRank(profile, true)
+  for (let uid in uidMap) {
+    let { qq, type } = uidMap[uid]
+    let player = new Player(uid, game)
+    let profiles = player.getProfiles()
+    // 刷新rankLimit
+    await ProfileRank.setUidInfo({ uid, profiles, qq, uidType: type })
+    let rank = await ProfileRank.create({ groupId, uid, qq })
+    for (let id in profiles) {
+      let profile = profiles[id]
+      if (!profile.hasData) {
+        continue
       }
-      if (rank.allowRank) {
-        count++
-      }
+      await rank.getRank(profile, true)
+    }
+    if (rank.allowRank) {
+      count++
     }
   }
   e.reply(`本群排名已刷新，共刷新${count}个UID数据...`)

@@ -7,7 +7,7 @@
 const fetch = require( 'node-fetch')
 const Data = require( '../../components/Data.js')
 
-const host = 'http://49.232.91.210/api/hutao'
+const host = 'http://miao.games/api/hutao'
 
 function getApi (api) {
   return `${host}?api=${api}`

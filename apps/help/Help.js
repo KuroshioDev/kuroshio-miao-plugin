@@ -37,7 +37,6 @@ const Help = {
 
     let helpConfig = lodash.defaults(diyCfg.helpCfg || {}, custom.helpCfg, sysCfg.helpCfg)
     let helpList = diyCfg.helpList || custom.helpList || sysCfg.helpList
-    let permisson = diyCfg.permisson || custom.permisson || sysCfg.permisson || []
 
     let helpGroup = []
 
@@ -63,16 +62,7 @@ const Help = {
 
       helpGroup.push(group)
     })
-    let channelId = this.e.session.channelId
-    if (permisson[channelId]) {
-      helpGroup = helpGroup.filter(gp => {
-        return permisson[channelId].includes(gp.group)
-      } )
-    }else {
-      helpGroup = helpGroup.filter(gp => {
-        return permisson['default'].includes(gp.group)
-      } )
-    }
+
     let themeData = await HelpTheme.getThemeData(diyCfg.helpCfg || {}, sysCfg.helpCfg || {})
     return await Common.render('help/index', {
       helpCfg: helpConfig,

@@ -56,7 +56,25 @@ class Player extends Base {
     }
   }
 
-  static async create(e, game = 'gs') {
+  get faceImgs () {
+    let char
+    if (this.isGs && this.face) {
+      char = Character.get(this.face)
+    }
+    if (!char) {
+      let charId = lodash.keys(this._avatars)[0]
+      if (charId) {
+        char = Character.get(charId)
+      }
+    }
+    let imgs = char?.imgs || {}
+    return {
+      face: imgs.face || '/common/item/face.webp',
+      banner: imgs.banner || `/meta${this.isSr ? '-sr' : ''}/character/common/imgs/banner.webp`
+    }
+  }
+
+  static async create (e, game = 'gs') {
     if (e?._mys?.uid || e.uid) {
       // 传入为e
       let player = new Player(e?._mys?.uid || e.uid, (game === 'sr' || e.isSr) ? 'sr' : 'gs')

@@ -14,6 +14,23 @@ const initDB = require("./db.js");
 
 const logger = new Logger("Kuroshio-Genshin-Plugin")
 
+let schema = Schema.object({
+  avatarCard: Schema.boolean().description('使用喵喵版角色卡片作为默认角色卡片功能'),
+  avatarProfile: Schema.boolean().description('面板查询'),
+  groupRank: Schema.boolean().default(true).description('群面板排名'),
+  commaGroup: Schema.number().description('数字分组'),
+  charWiki: Schema.boolean().default(true).description('角色图鉴信息'),
+  charWikiTalent: Schema.boolean().default(true).description('角色天赋信息'),
+  charPic: Schema.boolean().default(true).description('角色图片'),
+  renderScale: Schema.number().role('slider')
+  .min(50).max(200).step(1).default(100).description('图片精细度'),
+  help: Schema.boolean().description('喵喵帮助')
+}).description('miao-plugin 配置')
+if(fs.existsSync("../config/config.json")) {
+  fs.writeFileSync("../config/config.json", "")
+}
+
+fs.writeFileSync(`${common.getPluginsPath()}/miao-plugin/config/config.json`, JSON.stringify(schema), 'utf8')
 class MiaoPlugin {
   constructor(ctx, config) {
     // ready

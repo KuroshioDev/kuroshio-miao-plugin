@@ -88,7 +88,7 @@ const Profile = {
     try {
       await req.requestProfile(player, serv, player.game)
       player._profile = new Date() * 1
-      player.save()
+      player.save(true)
       return player._update.length
     } catch (err) {
       if (!e._isReplyed) {

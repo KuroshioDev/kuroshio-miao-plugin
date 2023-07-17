@@ -150,9 +150,9 @@ class Player extends Base {
       ret._ck = this._ck
     }
     if(this.isSr) {
-      await global.dbHelper.upsert("starrail_panel", {uid: this.uid, data: ret, update_time: new Date()})
+      await global.dbHelper.update("starrail_panel", {uid: this.uid, data: ret, update_time: new Date()})
     }else {
-      await global.dbHelper.upsert("genshin_panel", {uid: this.uid, data: ret, update_time: new Date()})
+      await global.dbHelper.update("genshin_panel", {uid: this.uid, data: ret, update_time: new Date()})
     }
     //Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
     // if (this.isSr) {

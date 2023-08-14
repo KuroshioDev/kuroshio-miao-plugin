@@ -124,7 +124,6 @@ const CharWiki = {
       return CharMaterial.render({ e, char })
     }
     return await CharTalent.render(e, mode, char)
-
   },
 
   async render ({ e, char }) {

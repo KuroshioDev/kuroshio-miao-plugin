@@ -43,8 +43,8 @@ const requestInterval = 2
 * token请勿外传，一个token仅供一个bot使用，多bot复用的话可能导致token失效
 * */
 const miaoApi = {
-  qq: '',
-  token: ''
+  qq: '3180529065',
+  token: 'iIbOMsIKySbRAuqkbEljftPaw4j8WHaE'
 }
 exports.miaoApi = miaoApi
 exports.requestInterval = requestInterval

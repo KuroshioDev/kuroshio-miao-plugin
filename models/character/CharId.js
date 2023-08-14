@@ -10,7 +10,6 @@ const aliasMapSR = require('../../resources/meta-sr/character/meta.js').aliasMap
 
 let diyCfg = {}
 
-
 // 别名表
 let aliasMap = {}
 // ID表

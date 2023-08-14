@@ -2,7 +2,7 @@
  * 用户数据文件
  * 数据存储在/data/UserData/${uid}.json 下
  * 兼容处理面板户数及Mys数据
- *
+ * 
  */
 const lodash = require( 'lodash')
 const Base = require( './Base.js')
@@ -111,9 +111,7 @@ class Player extends Base {
     }else {
       data = await global.dbHelper.get("genshin_panel", {uid: this.uid})
     }
-    if (data) {
-      data = data.data
-    }else {
+    if(!data){
       return
     }
     this.setBasicData(data)
@@ -149,12 +147,10 @@ class Player extends Base {
     if (this._ck) {
       ret._ck = this._ck
     }
-    if(this._save ) {
-      if(this.isSr) {
-        await global.dbHelper.update("starrail_panel", {uid: this.uid,}, {data: ret, update_time: new Date()})
-      }else {
-        await global.dbHelper.update("genshin_panel", {uid: this.uid,}, {data: ret, update_time: new Date()})
-      }
+    if(this.isSr) {
+      await global.dbHelper.update("starrail_panel", {uid: this.uid}, {data: ret, update_time: new Date()})
+    }else {
+      await global.dbHelper.update("genshin_panel", {uid: this.uid}, { data: ret, update_time: new Date()})
     }
     //Data.writeJSON(`/data/UserData/${this.uid}.json`, ret, 'root')
     // if (this.isSr) {

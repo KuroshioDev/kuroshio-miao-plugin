@@ -47,6 +47,7 @@ exports.details = [{
   }
 }, {
   check: ({ cons }) => cons < 6,
+  dmgKey: 'q',
   title: 'Q状态·一轮普攻5A+QTE超激化总伤害',
   params: { showEBuff: true },
   dmg: ({ talent }, dmg) => {
@@ -63,6 +64,7 @@ exports.details = [{
   }
 }, {
   check: ({ cons }) => cons >= 6,
+  dmgKey: 'q',
   title: 'Q状态·一轮普攻5A+QTE超激化总伤害（消耗4层豺祭）',
   params: { showEBuff: true },
   dmg: ({ talent }, dmg) => {
@@ -79,7 +81,7 @@ exports.details = [{
   }
 }]
 
-exports.defDmgIdx = 5
+exports.defDmgKey = 'q'
 exports.mainAttr = 'atk,cpct,cdmg,mastery'
 
 exports.buffs = [{

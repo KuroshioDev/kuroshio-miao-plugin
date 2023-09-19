@@ -36,6 +36,7 @@ exports.defDmgKey = 'e'
 
 exports.buffs = [{
   title: '被动天赋：基于元素精通提高杀生樱伤害[eDmg]%',
+  sort: 5,
   data: {
     eDmg: ({ attr, calc }) => calc(attr.mastery) * 0.15
   }

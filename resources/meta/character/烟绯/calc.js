@@ -9,6 +9,10 @@ exports.details = [{
 }, {
   title: 'E伤害',
   dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'], 'e')
+}, {
+  title: '4命护盾量',
+  check: ({ cons }) => cons >= 4,
+  dmg: ({ attr, calc }, { shield }) => shield(calc(attr.hp) * 0.45)
 }]
 exports.defDmgIdx = 1
 exports.mainAttr = 'atk,cpct,cdmg,mastery'

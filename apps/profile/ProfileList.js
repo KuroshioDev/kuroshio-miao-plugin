@@ -184,6 +184,16 @@ const ProfileList = {
     await Player.delByUid(targetUid)
     e.reply(`UID${targetUid}的本地数据已删除，排名数据已清除...`)
     return true
+  },
+
+  async reload (e) {
+    let uid = await getTargetUid(e)
+    if (!uid) {
+      return true
+    }
+    let player = Player.create(e)
+    player.reload()
+    return ProfileList.render(e)
   }
 }
 

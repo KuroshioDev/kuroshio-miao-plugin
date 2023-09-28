@@ -20,9 +20,10 @@ exports.details = [{
   }
 }]
 
-export const mainAttr = 'atk,cpct,cdmg'
+exports.defDmgIdx = 1
+exports.mainAttr = 'atk,cpct,cdmg'
 
-export const buffs = [{
+exports.buffs = [{
   title: '行迹-止厄：普攻造成的伤害提高40%',
   tree: 2,
   data: {

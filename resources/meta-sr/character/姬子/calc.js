@@ -12,6 +12,8 @@ exports.details = [{
   dmg: ({ talent }, dmg) => dmg(talent.t['技能伤害'], 't')
 }]
 
+
+exports.defDmgIdx = 2
 exports.mainAttr = 'atk,cpct,cdmg,speed'
 
 exports.buffs = [{
@@ -24,12 +26,6 @@ exports.buffs = [{
   cons: 1,
   data: {
     dmg: 15
-  }
-}, {
-  title: '希儿2命：释放战技后，2层Buff速度提高50%',
-  cons: 2,
-  data: {
-    speedPct: 50
   }
 }, {
   title: '行迹-灼热：战技对灼烧状态下的敌方目标造成的伤害提高20%',

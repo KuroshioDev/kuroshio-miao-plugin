@@ -203,9 +203,7 @@ class ProfileRank {
     let uidMap = {}
     let qqMap = {}
     let add = (qq, uid, type) => {
-      if (!uidMap || type === 'ck') {
-        uidMap[uid] = { uid, qq, type: type === 'ck' ? 'ck' : 'bind' }
-      }
+      uidMap[uid] = { uid, qq, type: type === 'ck' ? 'ck' : 'bind' }
       qqMap[qq] = true
     }
 
@@ -276,7 +274,8 @@ class ProfileRank {
     if (!uid) {
       return false
     }
-    if (uid * 1 < 100000005) {
+    // 预设面板不参与排名
+    if (uid * 1 < 100000006) {
       return false
     }
     try {

@@ -12,24 +12,15 @@ exports.details = [{
   dmg: ({ calc, attr, talent }, { heal }) => heal(calc(attr.hp) * talent.t['生息·百分比生命'] + talent.t['生息·固定值'])
 }]
 
+
 exports.mainAttr = 'atk,cpct,cdmg,hp'
+exports.defDmgIdx = 2
+
 
 exports.buffs = [{
   title: '白露2命：释放终结技后治疗提高15%',
   cons: 2,
   data: {
     heal: 15
-  }
-}, {
-  title: '希儿2命：释放战技后，2层Buff速度提高50%',
-  cons: 2,
-  data: {
-    speedPct: 50
-  }
-}, {
-  title: '行迹-夜行：抗性穿透提高20',
-  tree: 2,
-  data: {
-    kx: 20
   }
 }]

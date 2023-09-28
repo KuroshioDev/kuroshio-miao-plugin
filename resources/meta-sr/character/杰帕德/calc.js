@@ -9,9 +9,11 @@ exports.details = [{
   dmg: ({ attr, calc, talent }, { shield }) => shield(calc(attr.def) * talent.q['百分比防御力'] + talent.q['固定数值'])
 }, {
   title: '秘技护盾量',
-  dmg: ({ attr, calc, talent }, { shield }) => shield(calc(attr.def) * 0.24 + 150)
+  dmg: ({ attr, calc }, { shield }) => shield(calc(attr.def) * 0.24 + 150)
 }]
 
+
+exports.defDmgIdx = 2
 exports.mainAttr = 'atk,cpct,cdmg,def'
 
 exports.buffs = [{

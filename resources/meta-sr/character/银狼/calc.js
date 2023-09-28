@@ -19,7 +19,10 @@ exports.details = [{
   }
 }]
 
-exports.mainAttr = 'atk,cpct,cdmg,effPct'
+
+exports.defDmgIdx = 2
+exports.mainAttr = 'atk,cpct,cdmg'
+
 
 exports.buffs = [{
   title: '银狼天赋：防御力缺陷降低敌方防御力[enemyDef]%',

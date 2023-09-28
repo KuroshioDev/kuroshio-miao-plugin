@@ -12,7 +12,10 @@ exports.details = [{
   dmg: ({ talent }, dmg) => dmg(talent.t['技能伤害'] * 10, 'a3')
 }]
 
+
+exports.defDmgIdx = 3
 exports.mainAttr = 'atk,cpct,cdmg,speed'
+
 
 exports.buffs = [{
   title: '景元2命：神君行动后，普攻战技及终结技的伤害提高20%',

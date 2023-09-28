@@ -9,6 +9,8 @@ exports.details = [{
   dmg: ({ talent }, dmg) => dmg(talent.q['技能伤害'], 'q')
 }]
 
+
+exports.defDmgIdx = 2
 exports.mainAttr = 'atk,cpct,cdmg,speed'
 
 exports.buffs = [{

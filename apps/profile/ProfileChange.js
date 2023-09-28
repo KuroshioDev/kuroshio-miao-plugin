@@ -162,6 +162,7 @@ const ProfileChange = {
     let player = await Player.create(uid, game)
 
     let source = player.getProfile(charid)
+
     let dc = ds.char || {}
     if (!source || !source.hasData) {
       source = {}

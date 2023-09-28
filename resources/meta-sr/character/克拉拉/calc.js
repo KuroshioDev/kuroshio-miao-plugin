@@ -5,13 +5,18 @@ exports.details = [{
   title: '战技伤害',
   dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'], 'e')
 }, {
+  title: '战技伤害(含标记)',
+  dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'] * 2, 'e')
+}, {
   title: '反击伤害',
   dmg: ({ talent }, dmg) => dmg(talent.e['反击伤害'], 'e')
 }, {
-  title: '反击伤害',
+  title: '强化反击伤害',
   dmg: ({ talent }, dmg) => dmg(talent.q['伤害倍率提高'] + talent.t['反击伤害'], 't')
 }]
 
+
+exports.defDmgIdx = 4
 exports.mainAttr = 'atk,cpct,cdmg,speed'
 
 exports.buffs = [{

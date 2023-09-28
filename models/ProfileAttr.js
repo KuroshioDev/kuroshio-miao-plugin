@@ -4,7 +4,7 @@ const Format = require('../components/Format')
 
 const baseAttr = {
   gs: 'atk,def,hp,mastery,recharge,cpct,cdmg,dmg,phy,heal,shield'.split(','),
-  sr: 'atk,def,hp,speed,recharge,cpct,cdmg,dmg,heal,stance,effPct,effDmg'.split(',')
+  sr: 'atk,def,hp,speed,recharge,cpct,cdmg,dmg,heal,stance,effPct,effDef'.split(',')
 }
 let attrReg = {
   gs: new RegExp(`^(${baseAttr.gs.join('|')})(Base|Plus|Pct|Inc)$`),

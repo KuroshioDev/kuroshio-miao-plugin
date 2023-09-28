@@ -11,6 +11,7 @@ const artisBuffsSR = srMeta.artisBuffs
 const artiSetMapSR = srMeta.artiSetMap
 const lodash = require( 'lodash')
 
+
 class ArtifactSet extends Base {
   constructor (name, game = 'gs') {
     super()
@@ -33,12 +34,12 @@ class ArtifactSet extends Base {
   }
 
   get img () {
-    let arti = Artifact.get(this.sets[1])
+    let arti = Artifact.get(this.sets[1] || this.sets[5], this.game)
     return arti ? arti.img : ''
   }
 
   get abbr () {
-    return meta.abbr[this.name] || this.name
+    return this.game === 'gs' ? (meta.abbr[this.name] || this.name) : (abbrSR[this.name] || this.name)
   }
 
   static getByArti (name) {

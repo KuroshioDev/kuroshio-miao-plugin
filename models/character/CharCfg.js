@@ -46,7 +46,7 @@ let cfgMap = {
 let CharCfg = {
   // 获取角色伤害计算相关配置
   getCalcRule (char) {
-    let cfg = cfgMap.char[char.name]?.calc
+    let cfg = cfgMap.char[char.isTraveler ? '旅行者' : char.name]?.calc
     if (!cfg || lodash.isEmpty(cfg)) {
       return false
     }
@@ -61,7 +61,7 @@ let CharCfg = {
     }
   },
   getArtisCfg (char) {
-    return cfgMap.char[char.name]?.artis || false
+    return cfgMap.char[char.isTraveler ? '旅行者' : char.name]?.artis || false
   }
 }
 module.exports = CharCfg

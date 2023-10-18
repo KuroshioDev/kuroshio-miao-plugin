@@ -19,6 +19,7 @@ exports.mainAttr = 'atk,cpct,cdmg,recharge'
 
 exports.buffs = [{
   title: '莫娜被动：基于元素充能效率获得水元素伤害[dmg]%',
+  sort: 4,
   data: {
     dmg: ({ calc, attr }) => calc(attr.recharge) * 0.2
   }

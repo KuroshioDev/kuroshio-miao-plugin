@@ -128,11 +128,15 @@ class AvatarData extends Base {
     this._costume = ds.costume || this._costume || 0
     this.elem = ds.elem || this.elem || this.char.elem || ''
     this.promote = lodash.isUndefined(ds.promote) ? (this.promote || AttrCalc.calcPromote(this.level)) : (ds.promote || 0)
-    this.trees = ds.trees || this.trees || []
+    this.trees = this.trees || []
     this._source = ds._source || this._source || ''
     this._time = ds._time || this._time || now
     this._update = ds._update || this._update || ds._time || now
     this._talent = ds._talent || this._talent || ds._time || now
+
+    if (ds.trees) {
+      this.setTrees(ds.trees)
+    }
 
     // 存在数据源时更新时间
     if (source) {
@@ -145,6 +149,28 @@ class AvatarData extends Base {
         this._time = this._source !== 'mys' ? (this._time || now) : now
       }
     }
+  }
+
+  setTrees (ds) {
+    this.trees = []
+    let prefix = ''
+    let map = {}
+    lodash.forEach(this.char?.detail?.tree || {}, (ds, key) => {
+      let ret = /(\d{4})(\d{3})/.exec(key)
+      if (ret && ret[1] && ret[2]) {
+        prefix = prefix || ret[1]
+        map[ret[2]] = key
+      }
+    })
+    if (prefix) {
+      for (let i = 0; i <= 3; i++) {
+        map[`10${i}`] = `${prefix}10${i}`
+      }
+    }
+    lodash.forEach(ds, (id) => {
+      let ret = /\d{4}(\d{3})/.exec(id)
+      this.trees.push(map[ret?.[1] || id] || id)
+    })
   }
 
   setWeapon (ds = {}) {
@@ -166,9 +192,6 @@ class AvatarData extends Base {
   }
 
   getWeaponDetail () {
-    if (this.isGs) {
-      return this.weapon
-    }
     let ret = {
       ...this.weapon
     }
@@ -177,10 +200,21 @@ class AvatarData extends Base {
     }
     let wData = Weapon.get(ret.id, this.game)
     ret.splash = wData.imgs.gacha
-    let attrs = wData.calcAttr(ret.level, ret.promote)
-    lodash.forEach(attrs, (val, key) => {
-      attrs[key] = Format.comma(val, 1)
-    })
+    let wAttr = wData.calcAttr(ret.level, ret.promote)
+    let attrs = {}
+    if (this.isSr) {
+      lodash.forEach(wAttr, (val, key) => {
+        attrs[key] = Format.comma(val, 1)
+      })
+    } else if (this.isGs) {
+      attrs.atkBase = Format.comma(wAttr.atkBase, 1)
+      if (wAttr?.attr?.key) {
+        let keyType = {
+          mastery: 'comma'
+        }
+        attrs[wAttr.attr.key] = Format[keyType[wAttr.attr.key] || 'pct'](wAttr.attr.value, 1)
+      }
+    }
     ret.attrs = attrs
     ret.desc = wData.getAffixDesc(ret.affix)
     return ret

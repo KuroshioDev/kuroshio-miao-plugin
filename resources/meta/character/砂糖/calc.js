@@ -18,11 +18,5 @@ exports.details = [{
 
 exports.mainAttr = 'atk,cpct,cdmg,mastery'
 
-exports.buffs = [{
-  title: '砂糖被动：触发扩散反应时，队伍提升50精通'
-}, {
-  title: '砂糖被动：释放QE命中敌人时，基于自身精通提升队伍[mastery]精通',
-  data: {
-    mastery: ({ attr, calc }) => calc(attr.mastery) * 0.2
-  }
-}]
+
+exports.buffs = ['swirl']

@@ -28,15 +28,16 @@ let ProfileDetail = {
     let profileChange = false
     let changeMsg = msg
     let pc = ProfileChange.matchMsg(msg)
+
     if (pc && pc.char && pc.change) {
       if (!Cfg.get('profileChange')) {
         e.reply('面板替换功能已禁用...')
         return true
       }
-      if (pc.game === 'sr') {
-        e.reply('星铁面板暂不支持面板替换，请等待后续升级...')
-        return true
-      }
+      e.game = pc.game
+      e.isSr = e.game === 'sr'
+      e.uid = ''
+      e.msg = '#喵喵面板变换'
       e.uid = pc.uid || await e.runtime.getUid()
       profileChange = await ProfileChange.getProfile(e.uid, pc.char, pc.change, pc.game)
 
@@ -105,15 +106,18 @@ let ProfileDetail = {
     }
     if (!char.isRelease) {
       if(this.e.session.platform == 'qqguild' && this.e.session.guildId != '9627516829995618702') {
-        if (!profileChange) {
-          e.reply('角色尚未实装')
-          return true
-        } else if (Cfg.get('notReleasedData') === false) {
-          e.reply('未实装角色面板已禁用...')
-          return true
-        }
+            // 预设面板支持未实装角色
+      if (!profileChange && Number(e.uid) > 100000006) {
+        e.reply('角色尚未实装')
+        return true
       }
+      // 但仅在未实装开启时展示
+      if (Cfg.get('notReleasedData') === false) {
+        e.reply('未实装角色面板已禁用...')
+        return true
     }
+  }
+}
 
     if (mode === 'profile' || mode === 'dmg' || mode === 'weapon') {
       return ProfileDetail.render(e, char, mode, { dmgIdx, idxIsInput })

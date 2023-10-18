@@ -14,8 +14,11 @@ exports.details = [{
   check: ({ cons }) => cons >= 4,
   dmg: ({ attr, calc }, { shield }) => shield(calc(attr.hp) * 0.45)
 }]
+
+
 exports.defDmgIdx = 1
 exports.mainAttr = 'atk,cpct,cdmg,mastery'
+
 exports.buffs = [{
   title: '烟绯被动：重击消耗4枚丹火印增加20%火伤',
   cons: 6,

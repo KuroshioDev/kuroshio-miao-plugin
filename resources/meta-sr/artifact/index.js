@@ -38,3 +38,4 @@ exports.artiMap = artiMap
 exports.idMap = idMap
 exports.artisBuffs = artisBuffs
 exports.artiSetMap = artiSetMap
+exports.abbrSR = meta.abbr

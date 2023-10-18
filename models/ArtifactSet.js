@@ -6,6 +6,7 @@ const { meta, artiMap, artiSetMap } = require( '../resources/meta/artifact/index
 const artisBuffs = require( '../resources/meta/artifact/index.js').calc
 const Artifact = require( './Artifact.js')
 const srMeta = require('../resources/meta-sr/artifact/index.js')
+const abbrSR= srMeta.abbrSR
 const artiMapSR = srMeta.artiMap
 const artisBuffsSR = srMeta.artisBuffs
 const artiSetMapSR = srMeta.artiSetMap
@@ -83,7 +84,11 @@ class ArtifactSet extends Base {
   }
 
   getArti (idx = 1) {
-    return Artifact.get(this.getArtiName(idx))
+    return Artifact.get(this.getArtiName(idx), this.game)
+  }
+
+  static getAliasMap (game = 'gs') {
+    return game === 'gs' ? aliasMap : aliasMapSR
   }
 }
 

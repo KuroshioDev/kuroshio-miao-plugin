@@ -43,4 +43,4 @@ exports.buffs = [{
   data: {
     kx: ({ params }) => params.q ? 20 : 0
   }
-}]
+}, 'swirl']

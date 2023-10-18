@@ -1,32 +1,32 @@
 exports.details = [{
     title: '半血开E重击',
     params: { team: false },
-    dmg: ({ talent, attr }, dmg) => dmg(talent.a['重击伤害'], 'a2')
+    dmg: ({ talent }, dmg) => dmg(talent.a['重击伤害'], 'a2')
   }, {
     title: '半血开E重击蒸发',
     params: { team: false },
-    dmg: ({ talent, attr }, dmg) => dmg(talent.a['重击伤害'], 'a2', 'vaporize')
+    dmg: ({ talent }, dmg) => dmg(talent.a['重击伤害'], 'a2', 'vaporize')
   }, {
     title: '胡桃双水半血重击蒸发',
     params: { team: true},
-    dmg: ({ talent, attr }, dmg) => dmg(talent.a['重击伤害'], 'a2', 'vaporize')
+    dmg: ({ talent }, dmg) => dmg(talent.a['重击伤害'], 'a2', 'vaporize')
   }, {
     title: '半血开E后Q蒸发',
     params: { team: false },
-    dmg: ({ talent, attr }, dmg) => dmg(talent.q['低血量时技能伤害'], 'q', 'vaporize')
+    dmg: ({ talent }, dmg) => dmg(talent.q['低血量时技能伤害'], 'q', 'vaporize')
   }, {
     title: '胡桃双水半血Q蒸发',
     params: { team: true},
-    dmg: ({ talent, attr }, dmg) => dmg(talent.q['低血量时技能伤害'], 'q', 'vaporize')
+    dmg: ({ talent }, dmg) => dmg(talent.q['低血量时技能伤害'], 'q', 'vaporize')
   }]
-
+  
   exports.defDmgIdx = 2
   exports.mainAttr = 'hp,atk,cpct,cdmg,mastery'
-
+  
   exports.defParams = {
     team: true
   }
-
+  
   exports.buffs = [{
     check: ({ params }) => params.team === true,
     title: '双水共鸣：获得[hpPct]%生命值',
@@ -35,6 +35,7 @@ exports.details = [{
     }
   },{
     title: '蝶引来生：开E获得[atkPlus]点攻击力加成',
+    sort: 9,
     data: {
       atkPlus: ({ talent, attr, calc }) => {
         return Math.min(talent.e['攻击力提高'] * calc(attr.hp) / 100, attr.atk.base * 4)

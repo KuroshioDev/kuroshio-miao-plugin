@@ -1,35 +1,56 @@
 exports.details = [{
   title: '风轮两立',
-  params: { team:false},
+  params: { team: false },
   dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'], 'e')
 }, {
   title: '开Q满被动E',
-  params: { e: 1, layer: 5 ,team:false},
+  params: { e: 1, layer: 5, team: false },
   dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'], 'e')
 }, {
   title: '靖妖傩舞·首插',
   params: {
-    layer: 1 , team:false
+    layer: 1,
+    team: false
   },
   dmg: ({ talent }, dmg) => dmg(talent.a['低空/高空坠地冲击伤害'][1], 'a3')
 }, {
   title: '靖妖傩舞·尾插',
   params: {
-    layer: 5 , team:false
+    layer: 5,
+    team: false
   },
   dmg: ({ talent }, dmg) => dmg(talent.a['低空/高空坠地冲击伤害'][1], 'a3')
 }, {
-  title: '魈珐班 开Q满被动E',
-  params: { e: 1, layer: 5 ,team:true},
+  title: '魈珐班开Q满被动E',
+  params: {
+    e: 1,
+    layer: 5,
+    team: true
+  },
   dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'], 'e')
+}, {
+  title: '魈珐班开Q首插',
+  params: {
+    layer: 1,
+    team: true
+  },
+  dmg: ({ talent }, dmg) => dmg(talent.a['低空/高空坠地冲击伤害'][1], 'a3')
+}, {
+  title: '魈珐班开Q尾插',
+  params: {
+    layer: 5,
+    team: true
+  },
+  dmg: ({ talent }, dmg) => dmg(talent.a['低空/高空坠地冲击伤害'][1], 'a3')
 }]
 
-exports.defDmgIdx = 4
-exports.mainAttr = 'atk,cpct,cdmg'
+exports.defDmgIdx = 6
+exports.mainAttr = 'atk,cpct,cdmg,dmg'
+
 
 exports.defParams = {
   layer: 0,
-  team:true
+  team: true
 }
 
 exports.buffs = [{
@@ -47,17 +68,19 @@ exports.buffs = [{
   data: {
     eDmg: ({ params }) => params.e ? 45 : 0
   }
-}, {check: ({ params }) => params.team === true,
-    title: '风鹰宗室班：增加[atkPlus]点攻击力与[atkPct]%攻击力',
-    data: {
-      atkPct: 20,
-      atkPlus: 1202.35
+}, {
+  check: ({ params }) => params.team === true,
+  title: '风鹰宗室班：增加[atkPlus]点攻击力与[atkPct]%攻击力',
+  data: {
+    atkPct: 20,
+    atkPlus: 1202.35
   }
-  }, {check: ({ params }) => params.team === true,
-    title: '满命珐露珊：获得[dmg]%增伤,获得[kx]%减抗,获得[cdmg]%爆伤',
-    data: {
-      dmg: 40,
-      kx: 30,
-      cdmg:40,
-   }
-  }]
+}, {
+  check: ({ params }) => params.team === true,
+  title: '满命珐露珊：获得[dmg]%增伤,获得[kx]%减抗,获得[cdmg]%爆伤',
+  data: {
+    dmg: 40,
+    kx: 30,
+    cdmg: 40
+  }
+}]

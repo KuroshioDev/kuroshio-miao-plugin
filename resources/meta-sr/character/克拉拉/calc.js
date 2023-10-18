@@ -9,12 +9,15 @@ exports.details = [{
   dmg: ({ talent }, dmg) => dmg(talent.e['技能伤害'] * 2, 'e')
 }, {
   title: '反击伤害',
-  dmg: ({ talent }, dmg) => dmg(talent.e['反击伤害'], 'e')
+  dmg: ({ talent }, dmg) => dmg(talent.t['反击伤害'], 't')
 }, {
   title: '强化反击伤害',
   dmg: ({ talent }, dmg) => dmg(talent.q['伤害倍率提高'] + talent.t['反击伤害'], 't')
 }]
 
+
+exports.defDmgIdx = 4
+exports.mainAttr = 'atk,cpct,cdmg'
 
 exports.defDmgIdx = 4
 exports.mainAttr = 'atk,cpct,cdmg,speed'

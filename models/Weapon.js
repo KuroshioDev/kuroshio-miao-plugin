@@ -73,8 +73,11 @@ class Weapon extends Base {
   }
 
   get maxAffix () {
-    let datas = this.detail?.affixData?.datas || {}
-    return (datas['0'] && datas['0'][4]) ? 5 : 1
+    if (this.isSr) {
+      return 5
+    }
+    let data = this.detail?.affixData?.datas || {}
+    return (data['0'] && data['0'][4]) ? 5 : 1
   }
 
   static isWeaponSet (name) {
@@ -173,6 +176,9 @@ class Weapon extends Base {
 
   // 获取精炼描述
   getAffixDesc (affix = 1) {
+    if (this.isGs) {
+      return {}
+    }
     let skill = this.detail.skill
     let { name, desc, tables } = skill
     let reg = /\$(\d)\[(?:i|f1)\](\%?)/g

@@ -24,7 +24,6 @@ const _getTargetUid = async function (e) {
   }
   let uid = false
 
-
   try {
     let user = await MysApi.initUser(e)
     if (!user || !user.uid) {

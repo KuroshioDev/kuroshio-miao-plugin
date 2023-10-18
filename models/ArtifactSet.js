@@ -10,6 +10,8 @@ const abbrSR= srMeta.abbrSR
 const artiMapSR = srMeta.artiMap
 const artisBuffsSR = srMeta.artisBuffs
 const artiSetMapSR = srMeta.artiSetMap
+const aliasMapSR = srMeta.meta.aliasMap
+const aliasMap = meta.aliasMap
 const lodash = require( 'lodash')
 
 

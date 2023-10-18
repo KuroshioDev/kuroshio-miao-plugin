@@ -8,6 +8,7 @@ const Character = require('../../models/Character.js')
 const ProfileData = require('../../models/ProfileData.js')
 const Weapon = require('../../models/Weapon.js')
 const Player = require('../../models/Player.js')
+const ArtifactSet = require('../../models/ArtifactSet.js')
 
 
 // 默认武器
@@ -279,10 +280,11 @@ const ProfileChange = {
     }
 
     // 设置圣遗物
-    let artis = getSource(ds.artis)?.artis?.artis || {}
+    let artis = await getSource(ds.artis)
+    artis = artis?.artis?.artis || {}
     for (let idx = 1; idx <= (isGs ? 5 : 6); idx++) {
       if (ds['arti' + idx]) {
-        let source = getSource(ds['arti' + idx])
+        let source = await getSource(ds['arti' + idx])
         if (source && source.artis && source.artis[idx]) {
           artis[idx] = source.artis[idx]
         }
@@ -297,6 +299,9 @@ const ProfileChange = {
         }
       }
     }
+    ret.setArtis(artis)
+    ret.calcAttr()
+    return ret
   }
 }
 module.exports = ProfileChange
